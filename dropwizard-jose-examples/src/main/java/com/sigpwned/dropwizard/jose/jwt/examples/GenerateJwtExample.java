@@ -21,6 +21,7 @@ package com.sigpwned.dropwizard.jose.jwt.examples;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -42,7 +43,7 @@ public class GenerateJwtExample {
     // Given JWKs, create our factory
     JWTFactory factory = new JWTFactory(jwks, "issuer", Duration.ofHours(1L));
 
-    SignedJWT jwt = factory.create();
+    SignedJWT jwt = factory.create(Map.of("userId", "alpha", "userName", "Alpha Bravo"));
 
     System.out.println(jwt.serialize());
   }
