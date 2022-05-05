@@ -20,15 +20,15 @@ import io.dropwizard.core.ConfiguredBundle;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 
-public class JWTBundle<C, P extends Principal> implements ConfiguredBundle<JWTBundleConfiguration> {
-  public static class Builder<C, P extends Principal> {
+public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundleConfiguration> {
+  public static class Builder<P extends Principal> {
     private Authenticator<JWTClaimsSet, P> authenticator;
     private Authorizer<P> authorizer;
 
     /**
      * @param authenticator the authenticator to set
      */
-    public Builder<C, P> setAuthenticator(Authenticator<JWTClaimsSet, P> authenticator) {
+    public Builder<P> setAuthenticator(Authenticator<JWTClaimsSet, P> authenticator) {
       this.authenticator = authenticator;
       return this;
     }
@@ -36,17 +36,17 @@ public class JWTBundle<C, P extends Principal> implements ConfiguredBundle<JWTBu
     /**
      * @param authorizer the authorizer to set
      */
-    public Builder<C, P> setAuthorizer(Authorizer<P> authorizer) {
+    public Builder<P> setAuthorizer(Authorizer<P> authorizer) {
       this.authorizer = authorizer;
       return this;
     }
 
-    public JWTBundle<C, P> buildJWTBundle() {
+    public JWTBundle<P> buildJWTBundle() {
       return new JWTBundle<>(authenticator, authorizer);
     }
   }
 
-  public static <C, P extends Principal> JWTBundle.Builder<C, P> builder() {
+  public static <P extends Principal> JWTBundle.Builder<P> builder() {
     return new Builder<>();
   }
 

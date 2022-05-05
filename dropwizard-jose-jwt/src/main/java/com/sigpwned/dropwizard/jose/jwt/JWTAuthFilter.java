@@ -315,21 +315,16 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
     }
 
     // Try the query parameter next, if we have one
-    if (credentials == null) {
-      if (queryParameterName != null) {
-        credentials = Optional
-            .ofNullable(
-                requestContext.getUriInfo().getQueryParameters().getFirst(queryParameterName))
-            .orElse(null);
-      }
+    if (credentials == null && queryParameterName != null) {
+      credentials = Optional
+          .ofNullable(requestContext.getUriInfo().getQueryParameters().getFirst(queryParameterName))
+          .orElse(null);
     }
 
     // Try the cookie parameter last
-    if (credentials == null) {
-      if (cookieParameterName != null) {
-        credentials = Optional.ofNullable(requestContext.getCookies().get(cookieParameterName))
-            .map(Cookie::getValue).orElse(null);
-      }
+    if (credentials == null && cookieParameterName != null) {
+      credentials = Optional.ofNullable(requestContext.getCookies().get(cookieParameterName))
+          .map(Cookie::getValue).orElse(null);
     }
 
     // Treat the credentials as a JWT and try to extract claims from them
