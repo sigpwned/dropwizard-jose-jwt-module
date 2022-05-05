@@ -2,11 +2,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>com.sigpwned</groupId>
-      <artifactId>dropwizard-jose-module</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+        <groupId>com.sigpwned</groupId>
+        <artifactId>dropwizard-jose-module</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>dropwizard-jose-examples</artifactId>
     <name>dropwizard-jose-examples</name>
     <packaging>jar</packaging>
@@ -18,9 +18,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
         </dependency>
 
         <dependency>

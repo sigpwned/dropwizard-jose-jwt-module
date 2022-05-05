@@ -19,21 +19,14 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.time.Duration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.time.DurationMin;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.sigpwned.dropwizard.jose.jwt.util.JWKSets;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 
-public class JOSEFactory {
+public class JWTConfiguration {
   /**
    * The local filepath where the key store can be found
    */
@@ -84,25 +77,100 @@ public class JOSEFactory {
   private String issuer;
 
   /**
-   * Creates the JWT Factory from JWKs
+   * @return the keyStorePath
    */
-  public JWTFactory build() throws IOException {
-    KeyStore store = loadKeyStore();
-
-    JWKSet jwks;
-    try {
-      jwks = JWKSets.fromKeyStore(store);
-    } catch (KeyStoreException e) {
-      throw new IOException("Failed to load keys from store", e);
-    }
-
-    return new JWTFactory(jwks, issuer, tokenLifetime);
+  public String getKeyStorePath() {
+    return keyStorePath;
   }
 
-  private KeyStore loadKeyStore() throws IOException {
-    File keyStoreFile = new File(keyStorePath);
-    if (!keyStoreFile.isFile())
-      throw new FileNotFoundException(keyStorePath);
-    return KeyStores.loadKeyStore(keyStoreType, keyStoreFile, keyStorePassword, keyStoreProvider);
+  /**
+   * @param keyStorePath the keyStorePath to set
+   */
+  public void setKeyStorePath(String keyStorePath) {
+    this.keyStorePath = keyStorePath;
+  }
+
+  /**
+   * @return the keyStorePassword
+   */
+  public String getKeyStorePassword() {
+    return keyStorePassword;
+  }
+
+  /**
+   * @param keyStorePassword the keyStorePassword to set
+   */
+  public void setKeyStorePassword(String keyStorePassword) {
+    this.keyStorePassword = keyStorePassword;
+  }
+
+  /**
+   * @return the keyStoreType
+   */
+  public String getKeyStoreType() {
+    return keyStoreType;
+  }
+
+  /**
+   * @param keyStoreType the keyStoreType to set
+   */
+  public void setKeyStoreType(String keyStoreType) {
+    this.keyStoreType = keyStoreType;
+  }
+
+  /**
+   * @return the keyStoreProvider
+   */
+  public String getKeyStoreProvider() {
+    return keyStoreProvider;
+  }
+
+  /**
+   * @param keyStoreProvider the keyStoreProvider to set
+   */
+  public void setKeyStoreProvider(String keyStoreProvider) {
+    this.keyStoreProvider = keyStoreProvider;
+  }
+
+  /**
+   * @return the signingAlgorithm
+   */
+  public JWSAlgorithm getSigningAlgorithm() {
+    return signingAlgorithm;
+  }
+
+  /**
+   * @param signingAlgorithm the signingAlgorithm to set
+   */
+  public void setSigningAlgorithm(JWSAlgorithm signingAlgorithm) {
+    this.signingAlgorithm = signingAlgorithm;
+  }
+
+  /**
+   * @return the tokenLifetime
+   */
+  public Duration getTokenLifetime() {
+    return tokenLifetime;
+  }
+
+  /**
+   * @param tokenLifetime the tokenLifetime to set
+   */
+  public void setTokenLifetime(Duration tokenLifetime) {
+    this.tokenLifetime = tokenLifetime;
+  }
+
+  /**
+   * @return the issuer
+   */
+  public String getIssuer() {
+    return issuer;
+  }
+
+  /**
+   * @param issuer the issuer to set
+   */
+  public void setIssuer(String issuer) {
+    this.issuer = issuer;
   }
 }

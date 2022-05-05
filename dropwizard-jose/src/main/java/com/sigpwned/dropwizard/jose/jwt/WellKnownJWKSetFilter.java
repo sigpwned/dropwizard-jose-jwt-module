@@ -23,9 +23,12 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.nimbusds.jose.jwk.JWKSet;
 
+@PreMatching
 public class WellKnownJWKSetFilter implements ContainerRequestFilter {
   private final JWKSet jwks;
 
@@ -42,7 +45,8 @@ public class WellKnownJWKSetFilter implements ContainerRequestFilter {
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
     if (requestContext.getUriInfo().getAbsolutePath().getPath().equals("/.well-known/jwks.json")) {
-      requestContext.abortWith(Response.ok().entity(getJwks()).build());
+      requestContext.abortWith(
+          Response.ok().type(MediaType.APPLICATION_JSON_TYPE).entity(getJwks().toString()).build());
     }
   }
 }

@@ -1,0 +1,4 @@
+jwts:
+  keyStorePath: keys.p12
+  keyStorePassword: password
+  issuer: example

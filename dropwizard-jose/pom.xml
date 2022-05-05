@@ -18,28 +18,16 @@
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
+            <artifactId>dropwizard-core</artifactId>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <artifactId>dropwizard-auth</artifactId>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>${nimbus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
 
         <dependency>

@@ -40,10 +40,10 @@ public class JWTFactory {
   }
 
   public SignedJWT create() throws IOException {
-    return create(Map.of());
+    return create(new JWTClaimsSet.Builder().build());
   }
 
-  public SignedJWT create(Map<String, Object> claims) throws IOException {
+  public SignedJWT create(JWTClaimsSet claims) throws IOException {
     final Instant now = now();
 
     ConfigurableJWSMinter<SecurityContext> minter = new DefaultJWSMinter<>();
@@ -55,7 +55,7 @@ public class JWTFactory {
     JWTClaimsSet.Builder csb =
         new JWTClaimsSet.Builder().issuer(getIssuer()).jwtID(UUID.randomUUID().toString())
             .issueTime(Date.from(now)).expirationTime(Date.from(now.plus(getTokenLifetime())));
-    for (Map.Entry<String, Object> claim : claims.entrySet()) {
+    for (Map.Entry<String, Object> claim : claims.getClaims().entrySet()) {
       csb.claim(claim.getKey(), claim.getValue());
     }
 
