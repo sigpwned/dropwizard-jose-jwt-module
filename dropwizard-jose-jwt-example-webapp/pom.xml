@@ -3,18 +3,18 @@
 
     <parent>
         <groupId>com.sigpwned</groupId>
-        <artifactId>dropwizard-jose-module</artifactId>
+        <artifactId>dropwizard-jose-jwt-module</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dropwizard-jose-examples</artifactId>
-    <name>dropwizard-jose-examples</name>
+    <artifactId>dropwizard-jose-jwt-example-webapp</artifactId>
+    <name>dropwizard-jose-jwt-example-webapp</name>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.sigpwned</groupId>
-            <artifactId>dropwizard-jose</artifactId>
+            <artifactId>dropwizard-jose-jwt</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

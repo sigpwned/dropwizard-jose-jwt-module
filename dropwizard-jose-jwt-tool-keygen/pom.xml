@@ -3,12 +3,12 @@
 
     <parent>
         <groupId>com.sigpwned</groupId>
-        <artifactId>dropwizard-jose-module</artifactId>
+        <artifactId>dropwizard-jose-jwt-module</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dropwizard-jose-tool-keygen</artifactId>
-    <name>dropwizard-jose-tool-keygen</name>
+    <artifactId>dropwizard-jose-jwt-tool-keygen</artifactId>
+    <name>dropwizard-jose-jwt-tool-keygen</name>
     <packaging>jar</packaging>
 
     <build>
@@ -42,7 +42,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.sigpwned.dropwizard.jose.tool.keygen.KeygenTool</mainClass>
+                                    <mainClass>com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenTool</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
