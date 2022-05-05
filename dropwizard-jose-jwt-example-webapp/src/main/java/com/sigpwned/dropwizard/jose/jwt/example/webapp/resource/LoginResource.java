@@ -1,3 +1,22 @@
+/*-
+ * =================================LICENSE_START==================================
+ * dropwizard-jose-jwt-example-webapp
+ * ====================================SECTION=====================================
+ * Copyright (C) 2022 Andy Boothe
+ * ====================================SECTION=====================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ==================================LICENSE_END===================================
+ */
 package com.sigpwned.dropwizard.jose.jwt.example.webapp.resource;
 
 import java.io.IOException;
@@ -10,7 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.nimbusds.jwt.SignedJWT;
-import com.sigpwned.dropwizard.jose.jwt.JWTFactoryTest;
+import com.sigpwned.dropwizard.jose.jwt.JWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
@@ -24,10 +43,10 @@ import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Accounts;
 @Path("/login")
 public class LoginResource {
   private final AccountStore accountStore;
-  private final JWTFactoryTest tokenFactory;
+  private final JWTFactory tokenFactory;
 
   @Inject
-  public LoginResource(AccountStore accountStore, JWTFactoryTest tokenFactory) {
+  public LoginResource(AccountStore accountStore, JWTFactory tokenFactory) {
     this.accountStore = accountStore;
     this.tokenFactory = tokenFactory;
   }
@@ -55,7 +74,7 @@ public class LoginResource {
   /**
    * @return the tokenFactory
    */
-  public JWTFactoryTest getTokenFactory() {
+  public JWTFactory getTokenFactory() {
     return tokenFactory;
   }
 }
