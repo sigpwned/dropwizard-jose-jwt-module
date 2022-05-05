@@ -300,19 +300,18 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
-    String credentials = null;
+    String credentials;
 
     // Try to read the authentication header first
-    if (credentials == null) {
-      try {
-        credentials = Optional.ofNullable(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION))
-            .map(Authorization::fromString).filter(a -> a.getMethod().equalsIgnoreCase(prefix))
-            .map(Authorization::getCredentials).orElse(null);
-      } catch (IllegalArgumentException e) {
-        // No problem. This just isn't valid authentication.
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug("Failed to parse authorization", e);
-      }
+    try {
+      credentials = Optional.ofNullable(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION))
+          .map(Authorization::fromString).filter(a -> a.getMethod().equalsIgnoreCase(prefix))
+          .map(Authorization::getCredentials).orElse(null);
+    } catch (IllegalArgumentException e) {
+      // No problem. This just isn't valid authentication.
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug("Failed to parse authorization", e);
+      credentials = null;
     }
 
     // Try the query parameter next, if we have one
