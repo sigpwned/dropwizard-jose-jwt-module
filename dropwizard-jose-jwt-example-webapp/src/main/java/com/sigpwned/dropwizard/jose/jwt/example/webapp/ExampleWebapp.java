@@ -4,6 +4,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.sigpwned.dropwizard.jose.jwt.JWTBundle;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.auth.ExampleAuthenticator;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.auth.ExampleAuthorizer;
+import com.sigpwned.dropwizard.jose.jwt.example.webapp.health.AccountStoreHealthCheck;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.resource.LoginResource;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.resource.MeResource;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.serialization.NewSessionMessageBodyWriter;
@@ -58,5 +59,9 @@ public class ExampleWebapp extends Application<ExampleConfiguration> {
     // Our application's resources are simple: you can login, and ask who you are.
     environment.jersey().register(MeResource.class);
     environment.jersey().register(LoginResource.class);
+
+    // Make sure our account store is healthy
+    environment.healthChecks().register(AccountStoreHealthCheck.NAME,
+        new AccountStoreHealthCheck(accountStore));
   }
 }

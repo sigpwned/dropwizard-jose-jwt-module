@@ -1,3 +1,9 @@
+server:
+  type: default
+  rootPath: /v1
+  adminContextPath: /
+  applicationContextPath: /
+  
 jwts:
   keyStorePath: keys.p12
   keyStorePassword: password

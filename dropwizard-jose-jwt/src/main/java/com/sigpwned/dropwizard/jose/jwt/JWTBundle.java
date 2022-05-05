@@ -3,9 +3,19 @@ package com.sigpwned.dropwizard.jose.jwt;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Principal;
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -78,7 +88,26 @@ public class JWTBundle<C, P extends Principal> implements ConfiguredBundle<JWTBu
     environment.jersey().register(new AuthDynamicFeature(JWTAuthFilter.<P>builder(jwtFactory)
         .setAuthenticator(authenticator).setAuthorizer(authorizer).buildAuthFilter()));
 
-    environment.jersey().register(new WellKnownJWKSetFilter(jwtFactory.getJwks()));
+    // environment.jersey().register(new WellKnownJWKSetFilter(jwtFactory.getJwks()));
+
+    environment.servlets().addFilter("JWKs", new HttpFilter() {
+      private static final long serialVersionUID = 1L;
+
+
+
+      @Override
+      protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+          throws IOException, ServletException {
+        if (req.getRequestURI().equals("/.well-known/jwks.json")) {
+          res.setContentType(MediaType.APPLICATION_JSON);
+          try (ServletOutputStream out = res.getOutputStream()) {
+            out.write(jwtFactory.getJwks().toString().getBytes(StandardCharsets.UTF_8));
+          }
+        } else {
+          chain.doFilter(req, res);
+        }
+      }
+    }).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
   }
 
   /**
