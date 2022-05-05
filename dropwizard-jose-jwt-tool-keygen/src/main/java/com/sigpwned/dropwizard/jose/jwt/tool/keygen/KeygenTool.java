@@ -113,7 +113,7 @@ public class KeygenTool {
       ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).build(priv);
 
       Instant startDate = now;
-      Instant endDate = startDate.plus(30 * expirationMonths, ChronoUnit.DAYS);
+      Instant endDate = startDate.plus(30L * expirationMonths, ChronoUnit.DAYS);
 
       JcaX509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(dn,
           certificateSerialNumber, Date.from(startDate), Date.from(endDate), dn, pub);
