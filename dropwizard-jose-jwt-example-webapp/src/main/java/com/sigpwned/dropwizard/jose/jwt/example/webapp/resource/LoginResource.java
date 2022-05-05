@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.nimbusds.jwt.SignedJWT;
-import com.sigpwned.dropwizard.jose.jwt.JWTFactory;
+import com.sigpwned.dropwizard.jose.jwt.JWTFactoryTest;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
@@ -24,10 +24,10 @@ import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Accounts;
 @Path("/login")
 public class LoginResource {
   private final AccountStore accountStore;
-  private final JWTFactory tokenFactory;
+  private final JWTFactoryTest tokenFactory;
 
   @Inject
-  public LoginResource(AccountStore accountStore, JWTFactory tokenFactory) {
+  public LoginResource(AccountStore accountStore, JWTFactoryTest tokenFactory) {
     this.accountStore = accountStore;
     this.tokenFactory = tokenFactory;
   }
@@ -55,7 +55,7 @@ public class LoginResource {
   /**
    * @return the tokenFactory
    */
-  public JWTFactory getTokenFactory() {
+  public JWTFactoryTest getTokenFactory() {
     return tokenFactory;
   }
 }
