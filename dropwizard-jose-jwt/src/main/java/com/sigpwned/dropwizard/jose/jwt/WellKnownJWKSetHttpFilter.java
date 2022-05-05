@@ -20,20 +20,29 @@
 package com.sigpwned.dropwizard.jose.jwt;
 
 import java.io.IOException;
-import javax.inject.Inject;
-import javax.ws.rs.container.ContainerRequestContext;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import com.nimbusds.jose.jwk.JWKSet;
 
-@PreMatching
-public class WellKnownJWKSetFilter implements ContainerRequestFilter {
+/**
+ * Note that this is an {@link HttpFilter} and not a {@link ContainerRequestFilter}. Because the
+ * standard requires the keys to be published at the domain root and web applications can have a
+ * prefix (e.g., /v1) that prevents publishing resources at the domain root, it is necessary to use
+ * a servlet filter as opposed to a JAX-RS filter.
+ */
+public class WellKnownJWKSetHttpFilter extends HttpFilter {
+  private static final long serialVersionUID = -765773712787780302L;
+
   private final JWKSet jwks;
 
-  @Inject
-  public WellKnownJWKSetFilter(JWKSet jwks) {
+  public WellKnownJWKSetHttpFilter(JWKSet jwks) {
     // Make sure we only expose public data
     this.jwks = jwks.toPublicJWKSet();
   }
@@ -43,10 +52,15 @@ public class WellKnownJWKSetFilter implements ContainerRequestFilter {
   }
 
   @Override
-  public void filter(ContainerRequestContext requestContext) throws IOException {
-    if (requestContext.getUriInfo().getAbsolutePath().getPath().equals("/.well-known/jwks.json")) {
-      requestContext.abortWith(
-          Response.ok().type(MediaType.APPLICATION_JSON_TYPE).entity(getJwks().toString()).build());
+  protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+      throws IOException, ServletException {
+    if (req.getRequestURI().equals("/.well-known/jwks.json")) {
+      res.setContentType(MediaType.APPLICATION_JSON);
+      try (ServletOutputStream out = res.getOutputStream()) {
+        out.write(getJwks().toString().getBytes(StandardCharsets.UTF_8));
+      }
+    } else {
+      chain.doFilter(req, res);
     }
   }
 }
