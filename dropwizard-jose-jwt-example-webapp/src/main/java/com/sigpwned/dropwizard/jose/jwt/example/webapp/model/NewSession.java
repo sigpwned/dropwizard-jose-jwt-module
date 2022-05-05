@@ -1,4 +1,4 @@
-package com.sigpwned.dropwizard.jose.jwt.examples.webapp;
+package com.sigpwned.dropwizard.jose.jwt.example.webapp.model;
 
 import java.util.Objects;
 import com.nimbusds.jwt.SignedJWT;

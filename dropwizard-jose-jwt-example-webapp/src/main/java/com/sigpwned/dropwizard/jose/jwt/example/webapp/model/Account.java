@@ -1,16 +1,25 @@
-package com.sigpwned.dropwizard.jose.jwt.examples.webapp;
+package com.sigpwned.dropwizard.jose.jwt.example.webapp.model;
 
 import java.security.Principal;
 import java.util.Objects;
-import com.nimbusds.jwt.JWTClaimsSet;
+import javax.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Account implements Principal {
-  public static Account of(String id, String username, String name) {
+  @JsonCreator
+  public static Account of(@JsonProperty("id") String id, @JsonProperty("username") String username,
+      @JsonProperty("name") String name) {
     return new Account(id, username, name);
   }
 
+  @NotEmpty
   private final String id;
+
+  @NotEmpty
   private final String username;
+
+  @NotEmpty
   private final String name;
 
   public Account(String id, String username, String name) {
@@ -61,10 +70,5 @@ public class Account implements Principal {
   @Override
   public String toString() {
     return "Account [id=" + id + ", username=" + username + ", name=" + name + "]";
-  }
-
-  public JWTClaimsSet toClaims() {
-    return new JWTClaimsSet.Builder().claim("accountId", getId())
-        .claim("accountUsername", getUsername()).claim("accountName", getName()).build();
   }
 }

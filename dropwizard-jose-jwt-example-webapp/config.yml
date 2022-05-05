@@ -2,3 +2,14 @@ jwts:
   keyStorePath: keys.p12
   keyStorePassword: password
   issuer: example
+  
+login:
+  accounts:
+    - id: 100
+      username: administrator
+      name: Big Boss
+      password: "password"
+    - id: 200
+      username: user
+      name: Little Guy
+      password: "S00perS3cret!"
