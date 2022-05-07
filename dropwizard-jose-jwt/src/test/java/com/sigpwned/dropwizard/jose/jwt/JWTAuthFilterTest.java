@@ -241,6 +241,95 @@ public class JWTAuthFilterTest {
 
     unit.filter(request);
   }
-  
-  // TODO Tests for ordering -- query parameter first, then cookie, then auth header
+
+  @Test
+  public void shouldReadQueryParameterFirst() throws Exception {
+    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt3 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+
+    final ExamplePrincipal principal = new ExamplePrincipal();
+
+    @SuppressWarnings("unchecked")
+    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(jwt1.getJWTClaimsSet())).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(jwt2.getJWTClaimsSet())).thenReturn(Optional.empty());
+    when(authenticator.authenticate(jwt3.getJWTClaimsSet())).thenReturn(Optional.empty());
+
+    @SuppressWarnings("unchecked")
+    Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
+
+    JWTAuthFilter<ExamplePrincipal> unit = JWTAuthFilter.<ExamplePrincipal>builder()
+        .setAuthenticator(authenticator).setAuthorizer(authorizer).setIssuer(ISSUER)
+        .setQueryParameterName(QUERY_PARAMETER_NAME).setCookieParameterName(COOKIE_PARAMETER_NAME)
+        .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
+        .setUnauthorizedHandler(new UnauthorizedHandler() {
+          @Override
+          public RuntimeException buildException(String prefix, String realm) {
+            return new NotAuthorizedException("token");
+          }
+        }).buildAuthFilter();
+
+    MultivaluedHashMap<String, String> queryParameters = new MultivaluedHashMap<>();
+    queryParameters.putSingle(QUERY_PARAMETER_NAME, jwt1.serialize());
+
+    Map<String, Cookie> cookieParameters = new HashMap<>();
+    cookieParameters.put(COOKIE_PARAMETER_NAME,
+        new Cookie(COOKIE_PARAMETER_NAME, jwt2.serialize()));
+
+    UriInfo uriInfo = mock(UriInfo.class);
+    when(uriInfo.getQueryParameters()).thenReturn(queryParameters);
+
+    ContainerRequestContext request = mock(ContainerRequestContext.class);
+    when(request.getCookies()).thenReturn(cookieParameters);
+    when(request.getUriInfo()).thenReturn(uriInfo);
+    when(request.getHeaderString(HttpHeaders.AUTHORIZATION))
+        .thenReturn(JWTAuthFilter.DEFAULT_PREFIX + " " + jwt3.serialize());
+
+    unit.filter(request);
+  }
+
+  @Test
+  public void shouldReadCookieParameterSecond() throws Exception {
+    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+
+    final ExamplePrincipal principal = new ExamplePrincipal();
+
+    @SuppressWarnings("unchecked")
+    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(jwt1.getJWTClaimsSet())).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(jwt2.getJWTClaimsSet())).thenReturn(Optional.empty());
+
+    @SuppressWarnings("unchecked")
+    Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
+
+    JWTAuthFilter<ExamplePrincipal> unit = JWTAuthFilter.<ExamplePrincipal>builder()
+        .setAuthenticator(authenticator).setAuthorizer(authorizer).setIssuer(ISSUER)
+        .setQueryParameterName(QUERY_PARAMETER_NAME).setCookieParameterName(COOKIE_PARAMETER_NAME)
+        .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
+        .setUnauthorizedHandler(new UnauthorizedHandler() {
+          @Override
+          public RuntimeException buildException(String prefix, String realm) {
+            return new NotAuthorizedException("token");
+          }
+        }).buildAuthFilter();
+
+    MultivaluedHashMap<String, String> queryParameters = new MultivaluedHashMap<>();
+
+    Map<String, Cookie> cookieParameters = new HashMap<>();
+    cookieParameters.put(COOKIE_PARAMETER_NAME,
+        new Cookie(COOKIE_PARAMETER_NAME, jwt1.serialize()));
+
+    UriInfo uriInfo = mock(UriInfo.class);
+    when(uriInfo.getQueryParameters()).thenReturn(queryParameters);
+
+    ContainerRequestContext request = mock(ContainerRequestContext.class);
+    when(request.getCookies()).thenReturn(cookieParameters);
+    when(request.getUriInfo()).thenReturn(uriInfo);
+    when(request.getHeaderString(HttpHeaders.AUTHORIZATION))
+        .thenReturn(JWTAuthFilter.DEFAULT_PREFIX + " " + jwt2.serialize());
+
+    unit.filter(request);
+  }
 }
