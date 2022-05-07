@@ -40,6 +40,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 public class WellKnownJWKSetHttpFilter extends HttpFilter {
   private static final long serialVersionUID = -765773712787780302L;
 
+  public static final String WELL_KNOWN_JWKS_JSON_PATH = "/.well-known/jwks.json";
+
   private final JWKSet jwks;
 
   public WellKnownJWKSetHttpFilter(JWKSet jwks) {
@@ -54,7 +56,7 @@ public class WellKnownJWKSetHttpFilter extends HttpFilter {
   @Override
   protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
       throws IOException, ServletException {
-    if (req.getRequestURI().equals("/.well-known/jwks.json")) {
+    if (req.getRequestURI().equals(WELL_KNOWN_JWKS_JSON_PATH)) {
       res.setContentType(MediaType.APPLICATION_JSON);
       try (ServletOutputStream out = res.getOutputStream()) {
         out.write(getJwks().toString().getBytes(StandardCharsets.UTF_8));
