@@ -31,6 +31,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import com.sigpwned.dropwizard.jose.jwt.JWTAuthFilter;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
 import io.dropwizard.jackson.Jackson;
 
@@ -43,7 +44,7 @@ public class NewSessionMessageBodyWriter implements MessageBodyWriter<NewSession
   private final ObjectMapper mapper;
 
   public NewSessionMessageBodyWriter() {
-    this.mapper = Jackson.newObjectMapper();
+    this.mapper = newObjectMapper();
   }
 
   @Override
@@ -60,9 +61,18 @@ public class NewSessionMessageBodyWriter implements MessageBodyWriter<NewSession
     // It's safe to build the header value this way because both the Cookie key and value are both
     // URL safe. The string "token" is URL safe by inspection, and JWTs are URL safe by design.
     httpHeaders.add(HttpHeaders.SET_COOKIE,
-        String.format("%s=%s", "token", t.getToken().serialize()));
+        String.format("%s=%s", JWTAuthFilter.DEFAULT_COOKIE_PARAMETER_NAME, t.getToken().serialize()));
 
     // Otherwise, we write the account object like normal.
     mapper.writeValue(entityStream, t.getAccount());
+  }
+
+  /**
+   * test hook
+   * 
+   * @return
+   */
+  protected ObjectMapper newObjectMapper() {
+    return Jackson.newObjectMapper();
   }
 }

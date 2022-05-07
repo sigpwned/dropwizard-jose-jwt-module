@@ -58,10 +58,6 @@ public class JWTFactory {
     this.signingAlgorithm = signingAlgorithm;
   }
 
-  public SignedJWT create() throws IOException {
-    return create(new JWTClaimsSet.Builder().build());
-  }
-
   public SignedJWT create(JWTClaimsSet claims) throws IOException {
     final Instant now = now();
 

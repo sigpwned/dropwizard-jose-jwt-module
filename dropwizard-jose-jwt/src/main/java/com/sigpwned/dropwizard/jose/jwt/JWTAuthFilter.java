@@ -59,12 +59,12 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
   /**
    * The default query parameter for passing in a token
    */
-  private static final String DEFAULT_QUERY_PARAMETER_NAME = "token";
+  public static final String DEFAULT_QUERY_PARAMETER_NAME = "token";
 
   /**
    * The default query parameter for passing in a token
    */
-  private static final String DEFAULT_COOKIE_PARAMETER_NAME = "token";
+  public static final String DEFAULT_COOKIE_PARAMETER_NAME = "token";
 
   /**
    * The default value of the prefix, which is the leading value of the Authorization header

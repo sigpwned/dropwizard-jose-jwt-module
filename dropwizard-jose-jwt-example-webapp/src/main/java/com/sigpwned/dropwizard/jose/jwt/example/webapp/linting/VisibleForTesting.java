@@ -17,32 +17,20 @@
  * limitations under the License.
  * ==================================LICENSE_END===================================
  */
-package com.sigpwned.dropwizard.jose.jwt.example.webapp.resource;
+package com.sigpwned.dropwizard.jose.jwt.example.webapp.linting;
 
-import javax.annotation.security.PermitAll;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
-import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.VisibleForTesting;
-import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * A simple example endpoint that returns the current user. Note that the class is annotated with
- * {@link PermitAll}, which requires all calls to this endpoint to include credentials.
+ * Used to mark code generated automatically to adjust code coverage calculation
  */
-@PermitAll
-@Path("/me")
-public class MeResource {
-  @Context
-  @VisibleForTesting
-  SecurityContext context;
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Account getMe() {
-    return (Account) context.getUserPrincipal();
-  }
+@Retention(CLASS)
+@Target({TYPE, METHOD, CONSTRUCTOR, FIELD})
+public @interface VisibleForTesting {
 }

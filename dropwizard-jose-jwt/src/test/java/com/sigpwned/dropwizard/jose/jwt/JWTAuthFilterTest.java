@@ -68,6 +68,9 @@ public class JWTAuthFilterTest {
 
   public static final String COOKIE_PARAMETER_NAME = "cookieToken";
 
+  public static final JWTClaimsSet NONE = new JWTClaimsSet.Builder().build();
+
+
   @Before
   public void setupJWTFactoryTest() throws Exception {
     keyStoreFile = File.createTempFile("keystore.", ".p12");
@@ -126,7 +129,7 @@ public class JWTAuthFilterTest {
 
   @Test
   public void shouldRespectAuthorizationHeader() throws Exception {
-    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
 
     final ExamplePrincipal principal = new ExamplePrincipal();
 
@@ -166,7 +169,7 @@ public class JWTAuthFilterTest {
 
   @Test
   public void shouldRespectQueryParameter() throws Exception {
-    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
 
     final ExamplePrincipal principal = new ExamplePrincipal();
 
@@ -205,7 +208,7 @@ public class JWTAuthFilterTest {
 
   @Test
   public void shouldRespectCookieParameter() throws Exception {
-    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
 
     final ExamplePrincipal principal = new ExamplePrincipal();
 
@@ -244,9 +247,9 @@ public class JWTAuthFilterTest {
 
   @Test
   public void shouldReadQueryParameterFirst() throws Exception {
-    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
-    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
-    final SignedJWT jwt3 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
+    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
+    final SignedJWT jwt3 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
 
     final ExamplePrincipal principal = new ExamplePrincipal();
 
@@ -291,8 +294,8 @@ public class JWTAuthFilterTest {
 
   @Test
   public void shouldReadCookieParameterSecond() throws Exception {
-    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
-    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create();
+    final SignedJWT jwt1 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
+    final SignedJWT jwt2 = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)).create(NONE);
 
     final ExamplePrincipal principal = new ExamplePrincipal();
 

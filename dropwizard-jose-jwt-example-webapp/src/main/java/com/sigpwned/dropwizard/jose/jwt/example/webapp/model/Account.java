@@ -24,6 +24,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 
 public class Account implements Principal {
   @JsonCreator
@@ -41,6 +42,7 @@ public class Account implements Principal {
   @NotEmpty
   private final String name;
 
+  @Generated
   public Account(String id, String username, String name) {
     this.id = id;
     this.username = username;
@@ -50,6 +52,7 @@ public class Account implements Principal {
   /**
    * @return the id
    */
+  @Generated
   public String getId() {
     return id;
   }
@@ -57,6 +60,7 @@ public class Account implements Principal {
   /**
    * @return the username
    */
+  @Generated
   public String getUsername() {
     return username;
   }
@@ -64,16 +68,19 @@ public class Account implements Principal {
   /**
    * @return the name
    */
+  @Generated
   public String getName() {
     return name;
   }
 
   @Override
+  @Generated
   public int hashCode() {
     return Objects.hash(id, name, username);
   }
 
   @Override
+  @Generated
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
@@ -87,6 +94,7 @@ public class Account implements Principal {
   }
 
   @Override
+  @Generated
   public String toString() {
     return "Account [id=" + id + ", username=" + username + ", name=" + name + "]";
   }

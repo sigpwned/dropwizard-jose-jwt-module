@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.JWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
+import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Accounts;
@@ -46,6 +47,7 @@ public class LoginResource {
   private final JWTFactory tokenFactory;
 
   @Inject
+  @Generated
   public LoginResource(AccountStore accountStore, JWTFactory tokenFactory) {
     this.accountStore = accountStore;
     this.tokenFactory = tokenFactory;
@@ -67,6 +69,7 @@ public class LoginResource {
   /**
    * @return the accountStore
    */
+  @Generated
   public AccountStore getAccountStore() {
     return accountStore;
   }
@@ -74,6 +77,7 @@ public class LoginResource {
   /**
    * @return the tokenFactory
    */
+  @Generated
   public JWTFactory getTokenFactory() {
     return tokenFactory;
   }

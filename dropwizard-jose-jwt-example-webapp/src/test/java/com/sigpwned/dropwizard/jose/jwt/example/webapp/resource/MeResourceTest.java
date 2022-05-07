@@ -19,30 +19,27 @@
  */
 package com.sigpwned.dropwizard.jose.jwt.example.webapp.resource;
 
-import javax.annotation.security.PermitAll;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import javax.ws.rs.core.SecurityContext;
-import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.VisibleForTesting;
+import org.junit.Test;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 
-/**
- * A simple example endpoint that returns the current user. Note that the class is annotated with
- * {@link PermitAll}, which requires all calls to this endpoint to include credentials.
- */
-@PermitAll
-@Path("/me")
-public class MeResource {
-  @Context
-  @VisibleForTesting
-  SecurityContext context;
+public class MeResourceTest {
+  @Test
+  public void shouldReturnSecurityPrincipal() {
+    final Account account = Account.of("id", "username", "name");
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Account getMe() {
-    return (Account) context.getUserPrincipal();
+    final SecurityContext security = mock(SecurityContext.class);
+    when(security.getUserPrincipal()).thenReturn(account);
+
+    MeResource unit = new MeResource();
+    unit.context = security;
+
+    Account me = unit.getMe();
+
+    assertThat(me, is(account));
   }
 }

@@ -28,6 +28,7 @@ import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
+import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 
 /**
@@ -48,6 +49,7 @@ public class AccountStoreConfiguration {
     @NotEmpty
     private final String password;
 
+    @Generated
     public AccountCredentials(String id, String username, String name, String password) {
       super(id, username, name);
       this.password = password;
@@ -61,6 +63,7 @@ public class AccountStoreConfiguration {
     }
 
     @Override
+    @Generated
     public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
@@ -69,6 +72,7 @@ public class AccountStoreConfiguration {
     }
 
     @Override
+    @Generated
     public boolean equals(Object obj) {
       if (this == obj)
         return true;
@@ -81,6 +85,7 @@ public class AccountStoreConfiguration {
     }
 
     @Override
+    @Generated
     public String toString() {
       return "AccountCredentials [getPassword()=" + "*".repeat(getPassword().length())
           + ", getId()=" + getId() + ", getUsername()=" + getUsername() + ", getName()=" + getName()
@@ -95,6 +100,7 @@ public class AccountStoreConfiguration {
   /**
    * @return the accounts
    */
+  @Generated
   public List<AccountCredentials> getAccounts() {
     return accounts;
   }
@@ -102,6 +108,7 @@ public class AccountStoreConfiguration {
   /**
    * @param accounts the accounts to set
    */
+  @Generated
   public void setAccounts(List<AccountCredentials> accounts) {
     this.accounts = accounts;
   }

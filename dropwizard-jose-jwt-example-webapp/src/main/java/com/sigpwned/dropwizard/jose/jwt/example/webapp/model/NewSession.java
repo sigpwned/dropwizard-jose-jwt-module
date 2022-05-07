@@ -21,6 +21,7 @@ package com.sigpwned.dropwizard.jose.jwt.example.webapp.model;
 
 import java.util.Objects;
 import com.nimbusds.jwt.SignedJWT;
+import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 
 public class NewSession {
   public static NewSession of(SignedJWT token, Account account) {
@@ -30,6 +31,7 @@ public class NewSession {
   private final SignedJWT token;
   private final Account account;
 
+  @Generated
   public NewSession(SignedJWT token, Account account) {
     this.token = token;
     this.account = account;
@@ -38,6 +40,7 @@ public class NewSession {
   /**
    * @return the token
    */
+  @Generated
   public SignedJWT getToken() {
     return token;
   }
@@ -45,16 +48,19 @@ public class NewSession {
   /**
    * @return the account
    */
+  @Generated
   public Account getAccount() {
     return account;
   }
 
   @Override
+  @Generated
   public int hashCode() {
     return Objects.hash(account, token);
   }
 
   @Override
+  @Generated
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
@@ -63,10 +69,12 @@ public class NewSession {
     if (getClass() != obj.getClass())
       return false;
     NewSession other = (NewSession) obj;
-    return Objects.equals(account, other.account) && Objects.equals(token, other.token);
+    return Objects.equals(account, other.account)
+        && Objects.equals(token.serialize(), other.token.serialize());
   }
 
   @Override
+  @Generated
   public String toString() {
     return "NewSession [token=" + token + ", account=" + account + "]";
   }
