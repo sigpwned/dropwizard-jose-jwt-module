@@ -30,6 +30,7 @@ import javax.servlet.DispatcherType;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.Authenticator;
@@ -136,7 +137,7 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
       throw new IOException("Failed to load keys from store", e);
     }
 
-    return new JWTFactory(jwks, configuration.getIssuer(), configuration.getTokenLifetime());
+    return new DefaultJWTFactory(jwks, configuration.getIssuer(), configuration.getTokenLifetime());
   }
 
   /**

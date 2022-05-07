@@ -20,109 +20,36 @@
 package com.sigpwned.dropwizard.jose.jwt;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
-import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.mint.ConfigurableJWSMinter;
-import com.nimbusds.jose.mint.DefaultJWSMinter;
-import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-public class JWTFactory {
+
+public interface JWTFactory {
   public static final JWSAlgorithm DEFAULT_SIGNING_ALGORITHM = JWSAlgorithm.RS256;
 
-  private final JWKSet jwks;
-  private final String issuer;
-  private final Duration tokenLifetime;
-  private final JWSAlgorithm signingAlgorithm;
-
-  public JWTFactory(JWKSet jwks, String issuer, Duration tokenLifetime) {
-    this(jwks, issuer, tokenLifetime, DEFAULT_SIGNING_ALGORITHM);
-  }
-
-  public JWTFactory(JWKSet jwks, String issuer, Duration tokenLifetime,
-      JWSAlgorithm signingAlgorithm) {
-    this.jwks = jwks;
-    this.issuer = issuer;
-    this.tokenLifetime = tokenLifetime;
-    this.signingAlgorithm = signingAlgorithm;
-  }
-
-  public SignedJWT create(JWTClaimsSet claims) throws IOException {
-    final Instant now = now();
-
-    ConfigurableJWSMinter<SecurityContext> minter = new DefaultJWSMinter<>();
-
-    minter.setJWKSource(new ImmutableJWKSet<>(getJwks()));
-
-    JWSHeader header = new JWSHeader.Builder(getSigningAlgorithm()).build();
-
-    JWTClaimsSet.Builder csb = new JWTClaimsSet.Builder().issuer(getIssuer()).jwtID(generateJwtID())
-        .issueTime(Date.from(now)).expirationTime(Date.from(now.plus(getTokenLifetime())));
-    for (Map.Entry<String, Object> claim : claims.getClaims().entrySet()) {
-      csb.claim(claim.getKey(), claim.getValue());
-    }
-
-    SignedJWT result;
-    try {
-      JWSObject jws = minter.mint(header, csb.build().toPayload(), null);
-      result = SignedJWT.parse(jws.serialize());
-    } catch (ParseException | JOSEException e) {
-      throw new IOException("Failed to generate signed JWT", e);
-    }
-
-    return result;
-  }
+  SignedJWT create(JWTClaimsSet claims) throws IOException;
 
   /**
    * @return the jwks
    */
-  public JWKSet getJwks() {
-    return jwks;
-  }
+  JWKSet getJwks();
 
   /**
    * @return the realm
    */
-  public String getIssuer() {
-    return issuer;
-  }
+  String getIssuer();
 
   /**
    * @return the duration
    */
-  public Duration getTokenLifetime() {
-    return tokenLifetime;
-  }
+  Duration getTokenLifetime();
 
   /**
    * @return the algorithm
    */
-  public JWSAlgorithm getSigningAlgorithm() {
-    return signingAlgorithm;
-  }
+  JWSAlgorithm getSigningAlgorithm();
 
-  /**
-   * test hook
-   */
-  protected Instant now() {
-    return Instant.now();
-  }
-
-  /**
-   * test hook
-   */
-  protected String generateJwtID() {
-    return UUID.randomUUID().toString();
-  }
 }

@@ -42,6 +42,7 @@ import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Claims;
+import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenTool;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenToolConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
@@ -95,7 +96,7 @@ public class LoginResourceTest {
     final Instant now = Instant.now();
     final String jwtId = "jwtid";
 
-    JWTFactory jwtFactory = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)) {
+    JWTFactory jwtFactory = new DefaultJWTFactory(jwks, ISSUER, Duration.ofHours(1L)) {
       @Override
       protected Instant now() {
         return now;
@@ -124,20 +125,7 @@ public class LoginResourceTest {
     AccountStore accountStore = mock(AccountStore.class);
     when(accountStore.authenticate(username, password)).thenReturn(Optional.empty());
 
-    final Instant now = Instant.now();
-    final String jwtId = "jwtid";
-
-    JWTFactory jwtFactory = new JWTFactory(jwks, ISSUER, Duration.ofHours(1L)) {
-      @Override
-      protected Instant now() {
-        return now;
-      }
-
-      @Override
-      protected String generateJwtID() {
-        return jwtId;
-      }
-    };
+    JWTFactory jwtFactory = mock(JWTFactory.class);
 
     LoginResource unit = new LoginResource(accountStore, jwtFactory);
 

@@ -45,6 +45,7 @@ import com.nimbusds.jose.mint.DefaultJWSMinter;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenTool;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenToolConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
@@ -86,7 +87,7 @@ public class JWTFactoryTest {
     final String jwtID = "hello";
     final JWTClaimsSet claims = new JWTClaimsSet.Builder().claim("alpha", "bravo").build();
 
-    JWTFactory unit = new JWTFactory(jwks, issuer, tokenLifetime, signingAlgorithm) {
+    JWTFactory unit = new DefaultJWTFactory(jwks, issuer, tokenLifetime, signingAlgorithm) {
       @Override
       protected Instant now() {
         return now;
