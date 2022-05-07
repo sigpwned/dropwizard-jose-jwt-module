@@ -71,9 +71,8 @@ public class JWTFactory {
 
     JWSHeader header = new JWSHeader.Builder(getSigningAlgorithm()).build();
 
-    JWTClaimsSet.Builder csb =
-        new JWTClaimsSet.Builder().issuer(getIssuer()).jwtID(UUID.randomUUID().toString())
-            .issueTime(Date.from(now)).expirationTime(Date.from(now.plus(getTokenLifetime())));
+    JWTClaimsSet.Builder csb = new JWTClaimsSet.Builder().issuer(getIssuer()).jwtID(generateJwtID())
+        .issueTime(Date.from(now)).expirationTime(Date.from(now.plus(getTokenLifetime())));
     for (Map.Entry<String, Object> claim : claims.getClaims().entrySet()) {
       csb.claim(claim.getKey(), claim.getValue());
     }
@@ -122,5 +121,12 @@ public class JWTFactory {
    */
   protected Instant now() {
     return Instant.now();
+  }
+
+  /**
+   * test hook
+   */
+  protected String generateJwtID() {
+    return UUID.randomUUID().toString();
   }
 }

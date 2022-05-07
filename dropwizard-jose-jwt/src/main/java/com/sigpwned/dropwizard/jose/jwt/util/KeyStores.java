@@ -36,7 +36,22 @@ public final class KeyStores {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyStores.class);
 
+  /**
+   * We use PKCS12 because it is a standards-compliant (as opposed to Java-specific) keystore
+   * format.
+   */
   public static final String DEFAULT_TYPE = "PKCS12";
+
+  /**
+   * Same as {@code loadKeyStore(type, path, password)}.
+   * 
+   * @throws IOException
+   * 
+   * @see #loadKeyStore(String, File, String, String)
+   */
+  public static KeyStore loadKeyStore(String type, File path, String password) throws IOException {
+    return loadKeyStore(type, path, password, null);
+  }
 
   /**
    * Attempts to load a key store using the given type and provider. If the given provider fails,
@@ -45,7 +60,7 @@ public final class KeyStores {
   public static KeyStore loadKeyStore(String type, File path, String password, String provider)
       throws IOException {
     KeyStore result;
-    
+
     try {
       if (provider == null) {
         result = KeyStore.getInstance(type);

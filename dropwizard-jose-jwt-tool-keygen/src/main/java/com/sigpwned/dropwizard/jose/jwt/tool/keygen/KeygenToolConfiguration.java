@@ -19,11 +19,17 @@
  */
 package com.sigpwned.dropwizard.jose.jwt.tool.keygen;
 
+import java.io.PrintStream;
 import com.sigpwned.discourse.core.annotation.Configurable;
 import com.sigpwned.discourse.core.annotation.OptionParameter;
 
 @Configurable
 public class KeygenToolConfiguration {
+  /**
+   * Currently, the default expiration period is 12 months. This may change in the future.
+   */
+  public static final int DEFAULT_EXPIRATION_MONTHS = 12;
+
   @OptionParameter(shortName = "r", longName = "realm", required = true)
   public String realm;
 
@@ -31,5 +37,13 @@ public class KeygenToolConfiguration {
   public String password;
 
   @OptionParameter(shortName = "e", longName = "expirationMonths", required = false)
-  public int expirationMonths = 12;
+  public int expirationMonths = DEFAULT_EXPIRATION_MONTHS;
+
+  /**
+   * Not configurable. For testing only.
+   */
+  public String keyAlias;
+
+  // Not configurable
+  public PrintStream out = System.out;
 }

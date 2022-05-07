@@ -49,6 +49,17 @@ import com.sigpwned.discourse.core.util.Discourse;
  */
 public class KeygenTool {
   /**
+   * We choose PKCS12 because it's a standards-compliant key store as opposed to JKS, which is
+   * Java-specific.
+   */
+  public static final String KEY_STORE_TYPE = "PKCS12";
+
+  /**
+   * We use RSA because we want a public key cryptosystem and the JDK supports RSA out of the box.
+   */
+  public static final String KEY_ALGORITHM = "RSA";
+
+  /**
    * NIST guidance until at least 2030
    * 
    * @see <a href=
@@ -94,13 +105,15 @@ public class KeygenTool {
     final int expirationMonths = configuration.expirationMonths;
 
     final BigInteger certificateSerialNumber = BigInteger.valueOf(now.toEpochMilli());
-    final String keyAlias = now.atOffset(ZoneOffset.UTC).toLocalDate().toString();
     final int keyWidth = KEY_WIDTH;
     final int hashLength = HASH_LENGTH;
 
-    final String signatureAlgorithm = "SHA" + hashLength + "WithRSA";
+    final String keyAlias = Optional.ofNullable(configuration.keyAlias)
+        .orElse(now.atOffset(ZoneOffset.UTC).toLocalDate().toString());
 
-    KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+    final String signatureAlgorithm = "SHA" + hashLength + "With" + KEY_ALGORITHM;
+
+    KeyPairGenerator kpg = KeyPairGenerator.getInstance(KEY_ALGORITHM);
     kpg.initialize(keyWidth);
     KeyPair kp = kpg.generateKeyPair();
     RSAPublicKey pub = (RSAPublicKey) kp.getPublic();
@@ -123,11 +136,11 @@ public class KeygenTool {
       throw e;
     }
 
-    KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+    KeyStore store = KeyStore.getInstance(KEY_STORE_TYPE);
     store.load(null, password.toCharArray());
 
     store.setKeyEntry(keyAlias, priv, null, new Certificate[] {cert});
 
-    store.store(System.out, password.toCharArray());
+    store.store(configuration.out, password.toCharArray());
   }
 }

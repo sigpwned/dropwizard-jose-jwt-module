@@ -30,7 +30,6 @@ import javax.servlet.DispatcherType;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.sigpwned.dropwizard.jose.jwt.util.JWKSets;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.Authenticator;
@@ -39,6 +38,12 @@ import io.dropwizard.core.ConfiguredBundle;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 
+/**
+ * 
+ * A configuration bundle for adding JWT features to a Dropwizard application.
+ *
+ * @param <P> The application {@Link Principal} type
+ */
 public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundleConfiguration> {
   public static class Builder<P extends Principal> {
     private Authenticator<JWTClaimsSet, P> authenticator;
@@ -82,13 +87,18 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
     // nop
   }
 
+  /* default */ static final String WELL_KNOWN_JWKS_FILTER_NAME = "WellKnownJwks";
+
   @Override
   public void run(JWTBundleConfiguration bundleConfiguration, Environment environment)
       throws Exception {
+    // Pull out our configuration
     final JWTConfiguration configuration = bundleConfiguration.getJWTConfiguration();
 
+    // Build our JWT factory
     final JWTFactory jwtFactory = newJWTFactory(configuration);
 
+    // Register our JWT factory for dependency injection
     environment.jersey().register(new AbstractBinder() {
       @Override
       protected void configure() {
@@ -96,23 +106,32 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
       }
     });
 
-    environment.jersey().register(new AuthDynamicFeature(JWTAuthFilter.<P>builder(jwtFactory)
-        .setAuthenticator(authenticator).setAuthorizer(authorizer).buildAuthFilter()));
+    // Register the auth filter that checks JWTs on the way in. Note that the JWTAuthFilter does NOT
+    // issue new JWTs. That is up to the user. For a good example, see the example webapp project in
+    // this repository.
+    environment.jersey()
+        .register(new AuthDynamicFeature(JWTAuthFilter.<P>builder()
+            .setIssuer(jwtFactory.getIssuer()).setRealm(jwtFactory.getIssuer())
+            .setJWKs(jwtFactory.getJwks()).setSigningAlgorithm(jwtFactory.getSigningAlgorithm())
+            .setAuthenticator(authenticator).setAuthorizer(authorizer).buildAuthFilter()));
 
+    // Register the servlet filter that makes JWK public key available for third party users. This
+    // allows them to verify JWTs on their own. Note that we have to use a public key cryptosystem
+    // (like RSA) as opposed to a symmetric key cryptosystem (like AES) for this to make sense.
     environment.servlets()
-        .addFilter("WellKnownJwks", new WellKnownJWKSetHttpFilter(jwtFactory.getJwks()))
+        .addFilter(WELL_KNOWN_JWKS_FILTER_NAME, new WellKnownJWKSetHttpFilter(jwtFactory.getJwks()))
         .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
   }
 
   /**
    * Creates the JWT Factory from JWKs
    */
-  public JWTFactory newJWTFactory(JWTConfiguration configuration) throws IOException {
+  /* default */ JWTFactory newJWTFactory(JWTConfiguration configuration) throws IOException {
     KeyStore store = loadKeyStore(configuration);
 
     JWKSet jwks;
     try {
-      jwks = JWKSets.fromKeyStore(store);
+      jwks = JWKSet.load(store, null);
     } catch (KeyStoreException e) {
       throw new IOException("Failed to load keys from store", e);
     }
@@ -120,7 +139,10 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
     return new JWTFactory(jwks, configuration.getIssuer(), configuration.getTokenLifetime());
   }
 
-  private KeyStore loadKeyStore(JWTConfiguration configuration) throws IOException {
+  /**
+   * Loads the keys for our JWKs from the configured key store
+   */
+  /* default */ KeyStore loadKeyStore(JWTConfiguration configuration) throws IOException {
     File keyStoreFile = new File(configuration.getKeyStorePath());
     if (!keyStoreFile.isFile())
       throw new FileNotFoundException(configuration.getKeyStorePath());

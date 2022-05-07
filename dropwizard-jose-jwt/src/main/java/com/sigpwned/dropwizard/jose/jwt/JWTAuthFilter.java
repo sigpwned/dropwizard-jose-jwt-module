@@ -75,12 +75,6 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
     return new JWTAuthFilter.Builder<>();
   }
 
-  public static <P extends Principal> JWTAuthFilter.Builder<P> builder(JWTFactory jwtFactory) {
-    return JWTAuthFilter.<P>builder().setIssuer(jwtFactory.getIssuer())
-        .setRealm(jwtFactory.getIssuer()).setJWKs(jwtFactory.getJwks())
-        .setSigningAlgorithm(jwtFactory.getSigningAlgorithm());
-  }
-
   /**
    * Builder for {@link OAuthCredentialAuthFilter}.
    * <p>
@@ -302,29 +296,29 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
   public void filter(ContainerRequestContext requestContext) throws IOException {
     String credentials;
 
-    // Try to read the authentication header first
-    try {
-      credentials = Optional.ofNullable(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION))
-          .map(Authorization::fromString).filter(a -> a.getMethod().equalsIgnoreCase(prefix))
-          .map(Authorization::getCredentials).orElse(null);
-    } catch (IllegalArgumentException e) {
-      // No problem. This just isn't valid authentication.
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Failed to parse authorization", e);
-      credentials = null;
-    }
+    // Try to read a JWT from the query parameter first, if we have one
+    credentials = Optional
+        .ofNullable(requestContext.getUriInfo().getQueryParameters().getFirst(queryParameterName))
+        .orElse(null);
 
-    // Try the query parameter next, if we have one
-    if (credentials == null && queryParameterName != null) {
-      credentials = Optional
-          .ofNullable(requestContext.getUriInfo().getQueryParameters().getFirst(queryParameterName))
-          .orElse(null);
-    }
-
-    // Try the cookie parameter last
+    // Try to read a JWT from the cookie parameter next, if we have one
     if (credentials == null && cookieParameterName != null) {
       credentials = Optional.ofNullable(requestContext.getCookies().get(cookieParameterName))
           .map(Cookie::getValue).orElse(null);
+    }
+
+    // Try to read a JWT from the authentication header last, if we have one
+    if (credentials == null) {
+      try {
+        credentials = Optional.ofNullable(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION))
+            .map(Authorization::fromString).filter(a -> a.getMethod().equalsIgnoreCase(prefix))
+            .map(Authorization::getCredentials).orElse(null);
+      } catch (IllegalArgumentException e) {
+        // No problem. This just isn't valid authentication.
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug("Failed to parse authorization", e);
+        credentials = null;
+      }
     }
 
     // Treat the credentials as a JWT and try to extract claims from them
@@ -349,6 +343,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
       claims = null;
     }
 
+    // See if the application accepts our claims, which may be null. If not, fail as unauthorized.
     if (!authenticate(requestContext, claims, javax.ws.rs.core.SecurityContext.BASIC_AUTH)) {
       throw unauthorizedHandler.buildException(prefix, realm);
     }

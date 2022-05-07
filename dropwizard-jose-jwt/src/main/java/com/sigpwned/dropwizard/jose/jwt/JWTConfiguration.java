@@ -42,7 +42,8 @@ public class JWTConfiguration {
   private String keyStorePassword;
 
   /**
-   * The optional type of keystore. The default value is PKCS12.
+   * The optional type of keystore. The default value is PKCS12. If you used the KeygenTool in this
+   * repository, then you must use PKCS12.
    */
   @Valid
   @NotEmpty
@@ -50,13 +51,15 @@ public class JWTConfiguration {
 
   /**
    * The optional crypto provider to use to read the key store. If no value is given, the the JDK
-   * default provider will be used.
+   * default provider will be used. Any other value must be provided by the application as a
+   * dependency.
    */
   @Valid
   private String keyStoreProvider;
 
   /**
-   * The algorithm used to sign new tokens
+   * The algorithm used to sign new tokens. If you used the KeygenTool in this repository, then you
+   * must use an RSA-based algorithm.
    */
   @Valid
   private JWSAlgorithm signingAlgorithm = JWTFactory.DEFAULT_SIGNING_ALGORITHM;
