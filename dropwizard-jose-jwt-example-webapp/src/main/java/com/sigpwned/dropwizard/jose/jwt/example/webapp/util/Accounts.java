@@ -32,7 +32,7 @@ public final class Accounts {
   public static final Account USER = Account.of("200", "user", "Some Guy");
 
   /**
-   * Convers the given {@Link Account} to {@link JWTClaimsSet}.
+   * Convers the given {@link Account} to {@link JWTClaimsSet}.
    */
   public static JWTClaimsSet toClaims(Account a) {
     return new JWTClaimsSet.Builder().claim(Claims.ACCOUNT_ID_CLAIM, a.getId())
