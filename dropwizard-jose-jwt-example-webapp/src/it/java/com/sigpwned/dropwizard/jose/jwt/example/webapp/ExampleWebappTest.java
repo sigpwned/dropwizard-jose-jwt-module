@@ -38,7 +38,9 @@ public class ExampleWebappTest {
       new DropwizardAppRule<>(ExampleWebapp.class, "config.yml");
 
   @Test
-  public void smokeTest() {}
+  public void smokeTest() {
+    assertThat(true, is(true));
+  }
 
   @Test
   public void shouldReadWellKnownJwksProperly() throws Exception {
