@@ -174,7 +174,7 @@
 
     <modules>
         <module>dropwizard-jose-jwt</module>
-        <module>dropwizard-jose-jwt-tool-keygen</module>
+        <module>dropwizard-jose-jwt-keygen-tool</module>
         <module>dropwizard-jose-jwt-example-webapp</module>
     </modules>
 

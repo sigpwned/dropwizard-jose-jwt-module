@@ -73,7 +73,7 @@ Your application should include a login flow that takes traditional credentials 
 
 ## What keys should I use?
 
-Stateless JWTs are signed using a public key cryptosystem. By default, this bundle uses `RSA256`, which is an RSA signature encoded using [SHA256](https://en.wikipedia.org/wiki/SHA-2). You can find a tool for generating keys in [the dropwizard-jose-jwt-tool-keygen module](https://github.com/sigpwned/dropwizard-jose-jwt-module/tree/main/dropwizard-jose-jwt-tool-keygen).
+Stateless JWTs are signed using a public key cryptosystem. By default, this bundle uses `RSA256`, which is an RSA signature encoded using [SHA256](https://en.wikipedia.org/wiki/SHA-2). You can find a tool for generating keys in [the dropwizard-jose-jwt-keygen-tool module](https://github.com/sigpwned/dropwizard-jose-jwt-module/tree/main/dropwizard-jose-jwt-keygen-tool).
 
 ## Where can I find an example?
 

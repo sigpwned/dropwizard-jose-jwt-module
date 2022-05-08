@@ -7,8 +7,8 @@
         <version>3.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dropwizard-jose-jwt-tool-keygen</artifactId>
-    <name>dropwizard-jose-jwt-tool-keygen</name>
+    <artifactId>dropwizard-jose-jwt-keygen-tool</artifactId>
+    <name>dropwizard-jose-jwt-keygen-tool</name>
     <packaging>jar</packaging>
 
     <build>

@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>com.sigpwned</groupId>
-            <artifactId>dropwizard-jose-jwt-tool-keygen</artifactId>
+            <artifactId>dropwizard-jose-jwt-keygen-tool</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
             <exclusions>
