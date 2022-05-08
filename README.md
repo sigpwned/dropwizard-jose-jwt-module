@@ -46,7 +46,7 @@ To add stateless JWTs to a Dropwizard webapp, simply add the `JWTBundle` to your
 
 You will need to "bring your own" [authenticator and authorizer](https://www.dropwizard.io/en/latest/manual/auth.html).
 
-### How do I build my authorizer?
+### How do I build my authenticator?
 
 In the context of stateless JWTs, the authenticator is essentially a mapping between the JWT claims and your application's user `Principal` type. You can find the example webapp's authenticator [here](https://github.com/sigpwned/dropwizard-jose-jwt-module/blob/main/dropwizard-jose-jwt-example-webapp/src/main/java/com/sigpwned/dropwizard/jose/jwt/example/webapp/auth/ExampleAuthenticator.java).
 
