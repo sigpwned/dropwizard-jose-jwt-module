@@ -43,7 +43,7 @@ import io.dropwizard.core.setup.Environment;
  * 
  * A configuration bundle for adding JWT features to a Dropwizard application.
  *
- * @param <P> The application {@Link Principal} type
+ * @param <P> The application {@link Principal} type
  */
 public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundleConfiguration> {
   public static class Builder<P extends Principal> {

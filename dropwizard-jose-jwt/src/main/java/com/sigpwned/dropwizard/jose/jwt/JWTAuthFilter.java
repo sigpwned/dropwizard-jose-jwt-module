@@ -128,7 +128,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
      * This sets the underlying jwkSource. If this method is called, then there is no need to call
      * {@link #setJWKSource(JWKSource)}.
      * 
-     * @param jwkSource the jwkSource to set
+     * @param jwks the jwkSource to set
      */
     public Builder<P> setJWKs(JWKSet jwks) {
       return setJWKSource(new ImmutableJWKSet<>(jwks));
