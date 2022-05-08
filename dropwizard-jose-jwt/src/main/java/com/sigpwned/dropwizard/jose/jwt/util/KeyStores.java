@@ -49,6 +49,17 @@ public final class KeyStores {
    * 
    * @see #loadKeyStore(String, File, String, String)
    */
+  public static KeyStore loadKeyStore(File path, String password) throws IOException {
+    return loadKeyStore(DEFAULT_TYPE, path, password);
+  }
+
+  /**
+   * Same as {@code loadKeyStore(type, path, password)}.
+   * 
+   * @throws IOException
+   * 
+   * @see #loadKeyStore(String, File, String, String)
+   */
   public static KeyStore loadKeyStore(String type, File path, String password) throws IOException {
     return loadKeyStore(type, path, password, null);
   }

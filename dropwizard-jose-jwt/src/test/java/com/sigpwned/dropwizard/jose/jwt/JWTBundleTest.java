@@ -77,7 +77,7 @@ public class JWTBundleTest {
 
     KeygenTool.main(ktc);
 
-    keyStore = KeyStores.loadKeyStore(KeyStores.DEFAULT_TYPE, keyStoreFile, PASSWORD);
+    keyStore = KeyStores.loadKeyStore(keyStoreFile, PASSWORD);
   }
 
   @After

@@ -20,11 +20,15 @@
 package com.sigpwned.dropwizard.jose.jwt.example.webapp.model;
 
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 
 public class NewSession {
-  public static NewSession of(SignedJWT token, Account account) {
+  @JsonCreator
+  public static NewSession of(@JsonProperty("token") SignedJWT token,
+      @JsonProperty("account") Account account) {
     return new NewSession(token, account);
   }
 

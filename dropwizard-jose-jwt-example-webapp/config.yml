@@ -1,7 +1,8 @@
 server:
   type: default
   adminContextPath: /
-  applicationContextPath: /v1
+  applicationContextPath: /
+  rootPath: /v1
   
 jwts:
   keyStorePath: keys.p12

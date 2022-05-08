@@ -67,7 +67,7 @@ public class LoginResourceTest {
 
     KeygenTool.main(ktc);
 
-    keyStore = KeyStores.loadKeyStore(KeyStores.DEFAULT_TYPE, keyStoreFile, PASSWORD);
+    keyStore = KeyStores.loadKeyStore(keyStoreFile, PASSWORD);
 
     jwks = JWKSet.load(keyStore, null);
   }

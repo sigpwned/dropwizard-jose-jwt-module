@@ -62,7 +62,7 @@ public class KeyStoresTest {
 
   @Test
   public void shouldReadKeyStoreProperly() throws Exception {
-    KeyStore keyStore = KeyStores.loadKeyStore(KeygenTool.KEY_STORE_TYPE, keyStoreFile, PASSWORD);
+    KeyStore keyStore = KeyStores.loadKeyStore(keyStoreFile, PASSWORD);
 
     Key key = keyStore.getKey(KEY_ALIAS, null);
 
