@@ -42,6 +42,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import com.sigpwned.discourse.core.util.Discourse;
+import com.sigpwned.discourse.validation.ValidatingCommandBuilder;
 
 /**
  * Generates a KeyStore containing an RSA key suitable for use as a JWK. This implementation uses
@@ -94,7 +95,8 @@ public class KeygenTool {
 
 
   public static void main(String[] args) throws Exception {
-    main(Discourse.configuration(KeygenToolConfiguration.class, args));
+    main(Discourse.configuration(KeygenToolConfiguration.class, new ValidatingCommandBuilder(),
+        args));
   }
 
   public static void main(KeygenToolConfiguration configuration) throws Exception {

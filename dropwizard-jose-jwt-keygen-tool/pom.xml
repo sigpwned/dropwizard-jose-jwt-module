@@ -10,6 +10,10 @@
     <artifactId>dropwizard-jose-jwt-keygen-tool</artifactId>
     <name>dropwizard-jose-jwt-keygen-tool</name>
     <packaging>jar</packaging>
+    
+    <properties>
+      <discourse.version>0.0.0-b3</discourse.version>
+    </properties>
 
     <build>
         <plugins>
@@ -50,13 +54,19 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>${project.name}</finalName>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>com.sigpwned</groupId>
             <artifactId>discourse-core</artifactId>
-            <version>0.0.0-b2</version>
+            <version>${discourse.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sigpwned</groupId>
+            <artifactId>discourse-validation</artifactId>
+            <version>${discourse.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

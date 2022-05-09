@@ -50,6 +50,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>${project.name}</finalName>
     </build>
 
     <dependencies>
