@@ -53,7 +53,7 @@ import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 /**
  * This class uses the realm as the issuer.
  */
-public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet, P> {
+public class JWTAuthFilter<P extends Principal> extends AuthFilter<SignedJWT, P> {
   private static final Logger LOGGER = LoggerFactory.getLogger(JWTAuthFilter.class);
 
   /**
@@ -84,7 +84,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
    * @param <P> the type of the principal
    */
   public static class Builder<P extends Principal>
-      extends AuthFilterBuilder<JWTClaimsSet, P, JWTAuthFilter<P>> {
+      extends AuthFilterBuilder<SignedJWT, P, JWTAuthFilter<P>> {
     private String issuer;
     private JWSAlgorithm signingAlgorithm;
     private JWKSource<SecurityContext> jwkSource;
@@ -166,7 +166,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
     }
 
     @Override
-    public Builder<P> setAuthenticator(Authenticator<JWTClaimsSet, P> authenticator) {
+    public Builder<P> setAuthenticator(Authenticator<SignedJWT, P> authenticator) {
       return (Builder<P>) super.setAuthenticator(authenticator);
     }
 
@@ -322,29 +322,28 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JWTClaimsSet,
     }
 
     // Treat the credentials as a JWT and try to extract claims from them
-    JWTClaimsSet claims;
+    SignedJWT signedJwt = null;
     if (credentials != null) {
       try {
         JWT jwt = JWTParser.parse(credentials);
-
         if (jwt instanceof SignedJWT) {
-          SignedJWT signedJwt = (SignedJWT) jwt;
+          signedJwt = (SignedJWT) jwt;
 
-          claims = processor.process(signedJwt, null);
-        } else {
-          claims = null;
+          // Make sure our JWT is properly signed
+          processor.process(signedJwt, null);
+
+          // Make sure the claims can be parsed
+          signedJwt.getJWTClaimsSet();
         }
       } catch (Exception e) {
         if (LOGGER.isDebugEnabled())
           LOGGER.debug("Failed to process JWT claims", e);
-        claims = null;
+        signedJwt = null;
       }
-    } else {
-      claims = null;
     }
 
     // See if the application accepts our claims, which may be null. If not, fail as unauthorized.
-    if (!authenticate(requestContext, claims, javax.ws.rs.core.SecurityContext.BASIC_AUTH)) {
+    if (!authenticate(requestContext, signedJwt, javax.ws.rs.core.SecurityContext.BASIC_AUTH)) {
       throw unauthorizedHandler.buildException(prefix, realm);
     }
   }

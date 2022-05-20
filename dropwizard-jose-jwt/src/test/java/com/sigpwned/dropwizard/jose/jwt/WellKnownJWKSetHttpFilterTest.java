@@ -62,7 +62,7 @@ public class WellKnownJWKSetHttpFilterTest {
     WellKnownJWKSetHttpFilter unit = new WellKnownJWKSetHttpFilter(jwks);
 
     HttpServletRequest request = mock(HttpServletRequest.class);
-
+    when(request.getMethod()).thenReturn("GET");
     when(request.getRequestURI()).thenReturn(WellKnownJWKSetHttpFilter.WELL_KNOWN_JWKS_JSON_PATH);
 
     HttpServletResponse response = mock(HttpServletResponse.class);

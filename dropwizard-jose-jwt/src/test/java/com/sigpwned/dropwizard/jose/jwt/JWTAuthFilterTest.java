@@ -19,6 +19,7 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.security.Principal;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -40,6 +42,7 @@ import javax.ws.rs.core.UriInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -98,7 +101,7 @@ public class JWTAuthFilterTest {
   @Test(expected = NotAuthorizedException.class)
   public void shouldRejectUnauthorizedRequest() throws IOException {
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -135,8 +138,9 @@ public class JWTAuthFilterTest {
     final ExamplePrincipal principal = new ExamplePrincipal();
 
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(jwt.getJWTClaimsSet())).thenReturn(Optional.of(principal));
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt))))
+        .thenReturn(Optional.of(principal));
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -175,8 +179,8 @@ public class JWTAuthFilterTest {
     final ExamplePrincipal principal = new ExamplePrincipal();
 
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(jwt.getJWTClaimsSet())).thenReturn(Optional.of(principal));
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt)))).thenReturn(Optional.of(principal));
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -214,8 +218,8 @@ public class JWTAuthFilterTest {
     final ExamplePrincipal principal = new ExamplePrincipal();
 
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(jwt.getJWTClaimsSet())).thenReturn(Optional.of(principal));
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt)))).thenReturn(Optional.of(principal));
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -255,10 +259,10 @@ public class JWTAuthFilterTest {
     final ExamplePrincipal principal = new ExamplePrincipal();
 
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(jwt1.getJWTClaimsSet())).thenReturn(Optional.of(principal));
-    when(authenticator.authenticate(jwt2.getJWTClaimsSet())).thenReturn(Optional.empty());
-    when(authenticator.authenticate(jwt3.getJWTClaimsSet())).thenReturn(Optional.empty());
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1)))).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2)))).thenReturn(Optional.empty());
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt3)))).thenReturn(Optional.empty());
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -301,9 +305,9 @@ public class JWTAuthFilterTest {
     final ExamplePrincipal principal = new ExamplePrincipal();
 
     @SuppressWarnings("unchecked")
-    Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(jwt1.getJWTClaimsSet())).thenReturn(Optional.of(principal));
-    when(authenticator.authenticate(jwt2.getJWTClaimsSet())).thenReturn(Optional.empty());
+    Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1)))).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2)))).thenReturn(Optional.empty());
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -335,5 +339,33 @@ public class JWTAuthFilterTest {
         .thenReturn(JWTAuthFilter.DEFAULT_PREFIX + " " + jwt2.serialize());
 
     unit.filter(request);
+  }
+
+  private static class SignedJWTMatcher implements ArgumentMatcher<SignedJWT> {
+    public static SignedJWTMatcher is(SignedJWT target) {
+      return new SignedJWTMatcher(target);
+    }
+
+    private final SignedJWT target;
+
+    public SignedJWTMatcher(SignedJWT target) {
+      this.target = target;
+    }
+
+    /**
+     * @return the target
+     */
+    public SignedJWT getTarget() {
+      return target;
+    }
+
+    @Override
+    public boolean matches(SignedJWT argument) {
+      if(argument == null)
+        return false;
+      if(argument == getTarget())
+        return true;
+      return Objects.equals(argument.serialize(), getTarget().serialize());
+    }
   }
 }

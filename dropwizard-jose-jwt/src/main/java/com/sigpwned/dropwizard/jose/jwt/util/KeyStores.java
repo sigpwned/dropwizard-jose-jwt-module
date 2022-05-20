@@ -21,6 +21,7 @@ package com.sigpwned.dropwizard.jose.jwt.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -71,6 +72,9 @@ public final class KeyStores {
   public static KeyStore loadKeyStore(String type, File path, String password, String provider)
       throws IOException {
     KeyStore result;
+
+    if (!path.isFile())
+      throw new FileNotFoundException(path.getPath());
 
     try {
       if (provider == null) {

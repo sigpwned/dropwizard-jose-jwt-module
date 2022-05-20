@@ -40,7 +40,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenTool;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenToolConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
@@ -88,7 +88,7 @@ public class JWTBundleTest {
   @Test
   public void shouldLoadJWTFeaturesProperly() throws Exception {
     @SuppressWarnings("unchecked")
-    final Authenticator<JWTClaimsSet, ExamplePrincipal> authenticator = mock(Authenticator.class);
+    final Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
 
     @SuppressWarnings("unchecked")
     final Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);

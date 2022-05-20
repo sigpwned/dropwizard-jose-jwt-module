@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -32,7 +33,7 @@ import io.dropwizard.auth.Authenticator;
  * Because we are using stateless JWTs, this object is basically just a mapping from JWT claims to
  * our application's specific user model object, {@link Account}.
  */
-public class ExampleAuthenticator implements Authenticator<JWTClaimsSet, Account> {
+public class ExampleAuthenticator implements Authenticator<SignedJWT, Account> {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExampleAuthenticator.class);
 
   /**
@@ -40,8 +41,10 @@ public class ExampleAuthenticator implements Authenticator<JWTClaimsSet, Account
    * can trust the claims.
    */
   @Override
-  public Optional<Account> authenticate(JWTClaimsSet claims) throws AuthenticationException {
+  public Optional<Account> authenticate(SignedJWT jwt) throws AuthenticationException {
     try {
+      JWTClaimsSet claims = jwt.getJWTClaimsSet();
+
       // The whole point of stateless JWTs is that we put all of the required session information
       // into the JWT itself as claims. So let's just grab those claims and make our user!
       String id = claims.getStringClaim("accountId");
@@ -54,8 +57,8 @@ public class ExampleAuthenticator implements Authenticator<JWTClaimsSet, Account
       // required claims. That is an application bug at best, and indicates a compromised private
       // key at worst.
       if (LOGGER.isErrorEnabled())
-        LOGGER.error("Failed to create user from verified JWT. Compromised private key? claims={}",
-            claims);
+        LOGGER.error("Failed to create user from verified JWT. Compromised private key? key={}",
+            jwt);
       throw new AuthenticationException("Valid JWT does not contain required claims");
     }
   }

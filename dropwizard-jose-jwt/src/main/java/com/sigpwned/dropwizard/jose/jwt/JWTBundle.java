@@ -29,7 +29,7 @@ import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -47,13 +47,13 @@ import io.dropwizard.core.setup.Environment;
  */
 public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundleConfiguration> {
   public static class Builder<P extends Principal> {
-    private Authenticator<JWTClaimsSet, P> authenticator;
+    private Authenticator<SignedJWT, P> authenticator;
     private Authorizer<P> authorizer;
 
     /**
      * @param authenticator the authenticator to set
      */
-    public Builder<P> setAuthenticator(Authenticator<JWTClaimsSet, P> authenticator) {
+    public Builder<P> setAuthenticator(Authenticator<SignedJWT, P> authenticator) {
       this.authenticator = authenticator;
       return this;
     }
@@ -75,10 +75,10 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
     return new Builder<>();
   }
 
-  private final Authenticator<JWTClaimsSet, P> authenticator;
+  private final Authenticator<SignedJWT, P> authenticator;
   private final Authorizer<P> authorizer;
 
-  public JWTBundle(Authenticator<JWTClaimsSet, P> authenticator, Authorizer<P> authorizer) {
+  public JWTBundle(Authenticator<SignedJWT, P> authenticator, Authorizer<P> authorizer) {
     this.authorizer = authorizer;
     this.authenticator = authenticator;
   }

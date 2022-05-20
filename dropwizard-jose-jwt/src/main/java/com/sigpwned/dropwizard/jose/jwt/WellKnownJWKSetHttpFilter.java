@@ -27,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MediaType;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -57,6 +58,9 @@ public class WellKnownJWKSetHttpFilter extends HttpFilter {
   protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
       throws IOException, ServletException {
     if (req.getRequestURI().equals(WELL_KNOWN_JWKS_JSON_PATH)) {
+      if (!req.getMethod().equalsIgnoreCase("GET"))
+        throw new NotAcceptableException();
+      // TODO Content negotiation
       res.setContentType(MediaType.APPLICATION_JSON);
       try (ServletOutputStream out = res.getOutputStream()) {
         out.write(getJwks().toString().getBytes(StandardCharsets.UTF_8));

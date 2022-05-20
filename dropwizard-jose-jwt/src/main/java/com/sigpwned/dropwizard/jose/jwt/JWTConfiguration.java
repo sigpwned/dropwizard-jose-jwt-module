@@ -19,11 +19,17 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.time.Duration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.time.DurationMin;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 
 public class JWTConfiguration {
@@ -175,5 +181,27 @@ public class JWTConfiguration {
    */
   public void setIssuer(String issuer) {
     this.issuer = issuer;
+  }
+
+  private JWTFactory jwtFactoryInstance;
+
+  public synchronized JWTFactory buildJWTFactory() throws IOException {
+    if (jwtFactoryInstance == null)
+      jwtFactoryInstance = newJWTFactory();
+    return jwtFactoryInstance;
+  }
+
+  private JWTFactory newJWTFactory() throws IOException {
+    KeyStore store = KeyStores.loadKeyStore(getKeyStoreType(), new File(getKeyStorePath()),
+        getKeyStorePassword(), getKeyStoreProvider());
+
+    JWKSet jwks;
+    try {
+      jwks = JWKSet.load(store, null);
+    } catch (KeyStoreException e) {
+      throw new IOException("Failed to load keys from store", e);
+    }
+
+    return new DefaultJWTFactory(jwks, getIssuer(), getTokenLifetime());
   }
 }

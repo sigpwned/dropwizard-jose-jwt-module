@@ -32,7 +32,7 @@ import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Accounts;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 
 @SuppressWarnings("deprecation")
-public class ExampleWebappTest {
+public class ExampleWebappIT {
   @ClassRule
   public static final DropwizardAppRule<ExampleConfiguration> RULE =
       new DropwizardAppRule<>(ExampleWebapp.class, "config.yml");
