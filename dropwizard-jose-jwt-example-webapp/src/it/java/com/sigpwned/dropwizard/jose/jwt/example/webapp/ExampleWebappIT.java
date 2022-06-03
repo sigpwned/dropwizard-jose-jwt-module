@@ -18,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.core.Cookie;
 import org.junit.ClassRule;
 import org.junit.Test;
 import com.google.common.io.CharStreams;
@@ -30,6 +28,8 @@ import com.sigpwned.dropwizard.jose.jwt.WellKnownJWKSetHttpFilter;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.util.Accounts;
 import io.dropwizard.testing.junit.DropwizardAppRule;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.core.Cookie;
 
 @SuppressWarnings("deprecation")
 public class ExampleWebappIT {

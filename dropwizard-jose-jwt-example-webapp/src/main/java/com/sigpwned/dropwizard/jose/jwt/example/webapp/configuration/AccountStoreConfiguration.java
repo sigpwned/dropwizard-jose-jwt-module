@@ -23,13 +23,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.AccountStore;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * Obviously, this is a terrible, horrible, no good, very bad account store. In the real world, you

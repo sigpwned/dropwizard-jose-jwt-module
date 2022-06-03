@@ -26,7 +26,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Principal;
 import java.util.EnumSet;
-import javax.servlet.DispatcherType;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -38,6 +37,7 @@ import io.dropwizard.auth.Authorizer;
 import io.dropwizard.core.ConfiguredBundle;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
+import jakarta.servlet.DispatcherType;
 
 /**
  * 

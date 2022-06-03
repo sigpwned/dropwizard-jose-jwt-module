@@ -24,13 +24,13 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.time.Duration;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.time.DurationMin;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 
 public class JWTConfiguration {
   /**

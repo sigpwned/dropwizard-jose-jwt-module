@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -49,6 +46,9 @@ import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.Authorizer;
 import io.dropwizard.auth.UnauthorizedHandler;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.HttpHeaders;
 
 /**
  * This class uses the realm as the issuer.
@@ -343,7 +343,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<SignedJWT, P>
     }
 
     // See if the application accepts our claims, which may be null. If not, fail as unauthorized.
-    if (!authenticate(requestContext, signedJwt, javax.ws.rs.core.SecurityContext.BASIC_AUTH)) {
+    if (!authenticate(requestContext, signedJwt, jakarta.ws.rs.core.SecurityContext.BASIC_AUTH)) {
       throw unauthorizedHandler.buildException(prefix, realm);
     }
   }

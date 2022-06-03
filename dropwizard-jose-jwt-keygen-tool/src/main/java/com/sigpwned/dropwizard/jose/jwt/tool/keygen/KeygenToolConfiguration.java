@@ -20,11 +20,11 @@
 package com.sigpwned.dropwizard.jose.jwt.tool.keygen;
 
 import java.io.PrintStream;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import com.sigpwned.discourse.core.StandardConfigurationBase;
 import com.sigpwned.discourse.core.annotation.Configurable;
 import com.sigpwned.discourse.core.annotation.OptionParameter;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 @Configurable
 public class KeygenToolConfiguration extends StandardConfigurationBase {

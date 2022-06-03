@@ -32,9 +32,6 @@ import java.io.PrintStream;
 import java.security.KeyStore;
 import java.security.Principal;
 import java.util.EnumSet;
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.junit.After;
 import org.junit.Before;
@@ -50,6 +47,9 @@ import io.dropwizard.auth.Authorizer;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
 
 public class JWTBundleTest {
   public class ExamplePrincipal implements Principal {

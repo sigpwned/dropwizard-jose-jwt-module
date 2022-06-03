@@ -25,16 +25,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.SignedJWT;
 import com.sigpwned.dropwizard.jose.jwt.JWTAuthFilter;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.NewSession;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public class NewSessionMessageBodyWriterTest {
   public static final String EXAMPLE_SIGNED_JWT_STRING =

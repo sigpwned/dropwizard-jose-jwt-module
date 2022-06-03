@@ -31,7 +31,6 @@ import java.security.KeyStore;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import javax.ws.rs.NotAuthorizedException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +45,7 @@ import com.sigpwned.dropwizard.jose.jwt.factory.DefaultJWTFactory;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenTool;
 import com.sigpwned.dropwizard.jose.jwt.tool.keygen.KeygenToolConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
+import jakarta.ws.rs.NotAuthorizedException;
 
 public class LoginResourceTest {
   public File keyStoreFile;

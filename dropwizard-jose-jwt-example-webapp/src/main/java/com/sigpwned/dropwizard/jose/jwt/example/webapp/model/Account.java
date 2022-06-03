@@ -21,10 +21,10 @@ package com.sigpwned.dropwizard.jose.jwt.example.webapp.model;
 
 import java.security.Principal;
 import java.util.Objects;
-import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.linting.Generated;
+import jakarta.validation.constraints.NotEmpty;
 
 public class Account implements Principal {
   @JsonCreator
