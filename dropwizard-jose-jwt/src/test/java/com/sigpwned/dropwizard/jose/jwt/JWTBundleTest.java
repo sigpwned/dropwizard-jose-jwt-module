@@ -47,9 +47,9 @@ import com.sigpwned.dropwizard.jose.jwt.util.KeyStores;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.Authorizer;
-import io.dropwizard.core.setup.Environment;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
+import io.dropwizard.setup.Environment;
 
 public class JWTBundleTest {
   public class ExamplePrincipal implements Principal {

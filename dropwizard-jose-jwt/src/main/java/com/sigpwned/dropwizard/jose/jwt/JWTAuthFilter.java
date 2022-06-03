@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
@@ -344,7 +345,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<SignedJWT, P>
 
     // See if the application accepts our claims, which may be null. If not, fail as unauthorized.
     if (!authenticate(requestContext, signedJwt, javax.ws.rs.core.SecurityContext.BASIC_AUTH)) {
-      throw unauthorizedHandler.buildException(prefix, realm);
+      throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, realm));
     }
   }
 }

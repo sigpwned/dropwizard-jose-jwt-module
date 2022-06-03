@@ -19,6 +19,10 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.security.KeyStore;
 import java.security.Principal;
 import java.time.Duration;
@@ -33,11 +38,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.junit.After;
 import org.junit.Before;
@@ -98,7 +104,7 @@ public class JWTAuthFilterTest {
 
   public static final String ISSUER = "issuer";
 
-  @Test(expected = NotAuthorizedException.class)
+  @Test
   public void shouldRejectUnauthorizedRequest() throws IOException {
     @SuppressWarnings("unchecked")
     Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
@@ -112,8 +118,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -128,7 +134,17 @@ public class JWTAuthFilterTest {
     when(request.getCookies()).thenReturn(cookieParameters);
     when(request.getUriInfo()).thenReturn(uriInfo);
 
-    unit.filter(request);
+    WebApplicationException problem;
+    try {
+      unit.filter(request);
+      problem = null;
+    } catch (WebApplicationException e) {
+      problem = e;
+    }
+
+    assertThat(problem, not(nullValue()));
+
+    assertThat(problem.getResponse().getStatus(), is(HttpURLConnection.HTTP_UNAUTHORIZED));
   }
 
   @Test
@@ -151,8 +167,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -180,7 +196,8 @@ public class JWTAuthFilterTest {
 
     @SuppressWarnings("unchecked")
     Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt)))).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt))))
+        .thenReturn(Optional.of(principal));
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -191,8 +208,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -219,7 +236,8 @@ public class JWTAuthFilterTest {
 
     @SuppressWarnings("unchecked")
     Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt)))).thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt))))
+        .thenReturn(Optional.of(principal));
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -230,8 +248,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -260,9 +278,12 @@ public class JWTAuthFilterTest {
 
     @SuppressWarnings("unchecked")
     Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1)))).thenReturn(Optional.of(principal));
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2)))).thenReturn(Optional.empty());
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt3)))).thenReturn(Optional.empty());
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1))))
+        .thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2))))
+        .thenReturn(Optional.empty());
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt3))))
+        .thenReturn(Optional.empty());
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -273,8 +294,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -306,8 +327,10 @@ public class JWTAuthFilterTest {
 
     @SuppressWarnings("unchecked")
     Authenticator<SignedJWT, ExamplePrincipal> authenticator = mock(Authenticator.class);
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1)))).thenReturn(Optional.of(principal));
-    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2)))).thenReturn(Optional.empty());
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt1))))
+        .thenReturn(Optional.of(principal));
+    when(authenticator.authenticate(argThat(SignedJWTMatcher.is(jwt2))))
+        .thenReturn(Optional.empty());
 
     @SuppressWarnings("unchecked")
     Authorizer<ExamplePrincipal> authorizer = mock(Authorizer.class);
@@ -318,8 +341,8 @@ public class JWTAuthFilterTest {
         .setSigningAlgorithm(JWTFactory.DEFAULT_SIGNING_ALGORITHM).setJWKs(jwks)
         .setUnauthorizedHandler(new UnauthorizedHandler() {
           @Override
-          public RuntimeException buildException(String prefix, String realm) {
-            return new NotAuthorizedException("token");
+          public Response buildResponse(String prefix, String realm) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
           }
         }).buildAuthFilter();
 
@@ -361,9 +384,9 @@ public class JWTAuthFilterTest {
 
     @Override
     public boolean matches(SignedJWT argument) {
-      if(argument == null)
+      if (argument == null)
         return false;
-      if(argument == getTarget())
+      if (argument == getTarget())
         return true;
       return Objects.equals(argument.serialize(), getTarget().serialize());
     }

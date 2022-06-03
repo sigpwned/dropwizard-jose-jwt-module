@@ -27,9 +27,9 @@ import com.sigpwned.dropwizard.jose.jwt.example.webapp.health.AccountStoreHealth
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.resource.LoginResource;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.resource.MeResource;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.serialization.NewSessionMessageBodyWriter;
-import io.dropwizard.core.Application;
-import io.dropwizard.core.setup.Bootstrap;
-import io.dropwizard.core.setup.Environment;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 
 /**
  * This web application uses JWTs as a stateless session ID for a user-facing SPA. (If we use our

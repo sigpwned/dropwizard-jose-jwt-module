@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sigpwned.dropwizard.jose.jwt.JWTBundleConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.JWTConfiguration;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.configuration.AccountStoreConfiguration;
-import io.dropwizard.core.Configuration;
+import io.dropwizard.Configuration;
 
 public class ExampleConfiguration extends Configuration implements JWTBundleConfiguration {
   @Valid

@@ -19,8 +19,6 @@
  */
 package com.sigpwned.dropwizard.jose.jwt.example.webapp.auth;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import com.sigpwned.dropwizard.jose.jwt.example.webapp.model.Account;
 import io.dropwizard.auth.Authorizer;
 
@@ -30,8 +28,7 @@ import io.dropwizard.auth.Authorizer;
  */
 public class ExampleAuthorizer implements Authorizer<Account> {
   @Override
-  public boolean authorize(Account principal, String role,
-      @Nullable ContainerRequestContext requestContext) {
+  public boolean authorize(Account principal, String role) {
     // We have no roles. Everyone can do everything.
     return true;
   }
