@@ -19,8 +19,6 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -144,10 +142,7 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
    * Loads the keys for our JWKs from the configured key store
    */
   /* default */ KeyStore loadKeyStore(JWTConfiguration configuration) throws IOException {
-    File keyStoreFile = new File(configuration.getKeyStorePath());
-    if (!keyStoreFile.isFile())
-      throw new FileNotFoundException(configuration.getKeyStorePath());
-    return KeyStores.loadKeyStore(configuration.getKeyStoreType(), keyStoreFile,
+    return KeyStores.loadKeyStore(configuration.getKeyStoreType(), configuration.getKeyStorePath(),
         configuration.getKeyStorePassword(), configuration.getKeyStoreProvider());
   }
 }
