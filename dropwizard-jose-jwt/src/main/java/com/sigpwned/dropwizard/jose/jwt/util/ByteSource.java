@@ -35,7 +35,7 @@ public interface ByteSource {
    * Creates a new {@code ByteSource} from the given {@link URL}.
    */
   public static ByteSource fromUrl(URL url) {
-    return () -> url.openStream();
+    return url::openStream;
   }
 
   /**
