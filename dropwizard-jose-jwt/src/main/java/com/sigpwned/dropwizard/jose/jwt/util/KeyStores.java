@@ -20,7 +20,6 @@
 package com.sigpwned.dropwizard.jose.jwt.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,10 +70,18 @@ public final class KeyStores {
    */
   public static KeyStore loadKeyStore(String type, File path, String password, String provider)
       throws IOException {
-    KeyStore result;
-
     if (!path.isFile())
       throw new FileNotFoundException(path.getPath());
+    return loadKeyStore(type, ByteSource.fromFile(path), password, provider);
+  }
+
+  /**
+   * Attempts to load a key store using the given type and provider. If the given provider fails,
+   * then other providers will be attempted.
+   */
+  public static KeyStore loadKeyStore(String type, ByteSource bytes, String password,
+      String provider) throws IOException {
+    KeyStore result;
 
     try {
       if (provider == null) {
@@ -89,7 +96,7 @@ public final class KeyStores {
           result = KeyStore.getInstance(type);
         }
       }
-      try (InputStream inputStream = new FileInputStream(path)) {
+      try (InputStream inputStream = bytes.getBytes()) {
         result.load(inputStream, password.toCharArray());
       }
     } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
