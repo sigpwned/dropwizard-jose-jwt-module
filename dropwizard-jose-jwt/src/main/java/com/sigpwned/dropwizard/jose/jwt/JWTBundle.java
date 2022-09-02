@@ -34,6 +34,8 @@ import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.Authorizer;
+import io.dropwizard.auth.DefaultUnauthorizedHandler;
+import io.dropwizard.auth.UnauthorizedHandler;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -47,6 +49,7 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
   public static class Builder<P extends Principal> {
     private Authenticator<SignedJWT, P> authenticator;
     private Authorizer<P> authorizer;
+    private UnauthorizedHandler unauthorizedHandler = new DefaultUnauthorizedHandler();
 
     /**
      * @param authenticator the authenticator to set
@@ -64,8 +67,16 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
       return this;
     }
 
+    /**
+     * @param unauthorizedHandler the unauthorizedHandler to set
+     */
+    public Builder<P> setUnauthorizedHandler(UnauthorizedHandler unauthorizedHandler) {
+      this.unauthorizedHandler = unauthorizedHandler;
+      return this;
+    }
+
     public JWTBundle<P> buildJWTBundle() {
-      return new JWTBundle<>(authenticator, authorizer);
+      return new JWTBundle<>(authenticator, authorizer, unauthorizedHandler);
     }
   }
 
@@ -75,10 +86,17 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
 
   private final Authenticator<SignedJWT, P> authenticator;
   private final Authorizer<P> authorizer;
+  private final UnauthorizedHandler unauthorizedHandler;
 
   public JWTBundle(Authenticator<SignedJWT, P> authenticator, Authorizer<P> authorizer) {
+    this(authenticator, authorizer, new DefaultUnauthorizedHandler());
+  }
+
+  public JWTBundle(Authenticator<SignedJWT, P> authenticator, Authorizer<P> authorizer,
+      UnauthorizedHandler unauthorizedHandler) {
     this.authorizer = authorizer;
     this.authenticator = authenticator;
+    this.unauthorizedHandler = unauthorizedHandler;
   }
 
   @Override
@@ -112,7 +130,8 @@ public class JWTBundle<P extends Principal> implements ConfiguredBundle<JWTBundl
         .register(new AuthDynamicFeature(JWTAuthFilter.<P>builder()
             .setIssuer(jwtFactory.getIssuer()).setRealm(jwtFactory.getIssuer())
             .setJWKs(jwtFactory.getJwks()).setSigningAlgorithm(jwtFactory.getSigningAlgorithm())
-            .setAuthenticator(authenticator).setAuthorizer(authorizer).buildAuthFilter()));
+            .setAuthenticator(authenticator).setAuthorizer(authorizer)
+            .setUnauthorizedHandler(unauthorizedHandler).buildAuthFilter()));
 
     // Register the servlet filter that makes JWK public key available for third party users. This
     // allows them to verify JWTs on their own. Note that we have to use a public key cryptosystem
