@@ -3,7 +3,7 @@
 
     <groupId>com.sigpwned</groupId>
     <artifactId>dropwizard-jose-jwt-module</artifactId>
-    <version>4.0.5</version>
+    <version>4.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>dropwizard-jose-jwt-module</name>
     <inceptionYear>2022</inceptionYear>
@@ -22,7 +22,7 @@
         <connection>scm:git:ssh://git@github.com/sigpwned/dropwizard-jose-jwt-module.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/sigpwned/dropwizard-jose-jwt-module.git</developerConnection>
         <url>https://github.com/sigpwned/dropwizard-jose-jwt-module/tree/main</url>
-        <tag>v4.0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
