@@ -68,7 +68,7 @@
         </sonar.exclusions>
 
         <dropwizard.version>3.0.0-beta.2</dropwizard.version>
-        <nimbus.version>9.29</nimbus.version>
+        <nimbus.version>9.36</nimbus.version>
         <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
