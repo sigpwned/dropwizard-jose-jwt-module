@@ -67,7 +67,7 @@
           **/pom.xml
         </sonar.exclusions>
 
-        <dropwizard.version>3.0.0-beta.2</dropwizard.version>
+        <dropwizard.version>3.0.5</dropwizard.version>
         <nimbus.version>9.29</nimbus.version>
         <slf4j.version>2.0.10</slf4j.version>
     </properties>
