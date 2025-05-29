@@ -65,8 +65,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-testing</artifactId>
+            <groupId>io.dropwizard.modules</groupId>
+            <artifactId>dropwizard-testing-junit4</artifactId>
+            <version>${dropwizard.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

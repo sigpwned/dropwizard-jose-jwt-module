@@ -67,9 +67,9 @@
           **/pom.xml
         </sonar.exclusions>
 
-        <dropwizard.version>4.0.0-beta.1</dropwizard.version>
-        <nimbus.version>9.23</nimbus.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <dropwizard.version>4.0.14</dropwizard.version>
+        <nimbus.version>10.3</nimbus.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <build>
@@ -172,6 +172,11 @@
                 <version>${dropwizard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
