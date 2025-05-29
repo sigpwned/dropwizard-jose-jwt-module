@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -65,8 +67,11 @@ public class ExampleWebappIT {
 
     final Account account = Account.of(id, username, name);
 
-    HttpResponse loginResponse =
-        httpPost("/v1/login", Map.of("username", username, "password", password));
+    Map<String, String> credentials = new HashMap<>(2);
+    credentials.put("username", username);
+    credentials.put("password", password);
+
+    HttpResponse loginResponse = httpPost("/v1/login", credentials);
 
     Account responseAccount =
         RULE.getObjectMapper().readValue(loginResponse.getBody(), Account.class);
@@ -84,8 +89,7 @@ public class ExampleWebappIT {
     assertThat(tokenAccount, is(account));
 
     HttpResponse meResponse = httpGet(String.format("/v1/me?%s=%s",
-        URLEncoder.encode(JWTAuthFilter.DEFAULT_QUERY_PARAMETER_NAME, StandardCharsets.UTF_8),
-        URLEncoder.encode(jwt.serialize(), StandardCharsets.UTF_8)));
+        urlencode(JWTAuthFilter.DEFAULT_QUERY_PARAMETER_NAME), urlencode(jwt.serialize())));
 
     Account meAccount = RULE.getObjectMapper().readValue(meResponse.getBody(), Account.class);
 
@@ -200,8 +204,7 @@ public class ExampleWebappIT {
 
       try (OutputStream out = cn.getOutputStream()) {
         out.write(requestBody.entrySet().stream()
-            .map(e -> String.format("%s=%s", URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8),
-                URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)))
+            .map(e -> String.format("%s=%s", urlencode(e.getKey()), urlencode(e.getValue())))
             .collect(joining("&")).getBytes(StandardCharsets.UTF_8));
       }
 
@@ -225,6 +228,15 @@ public class ExampleWebappIT {
       return HttpResponse.of(responseBody, headers);
     } finally {
       cn.disconnect();
+    }
+  }
+
+  private static String urlencode(String s) {
+    try {
+      return URLEncoder.encode(s, StandardCharsets.UTF_8.name());
+    } catch (UnsupportedEncodingException e) {
+      // This should never happen because UTF-8 is always supported, per the Java spec
+      throw new UncheckedIOException("Failed to URL-encode string", e);
     }
   }
 }
