@@ -87,10 +87,21 @@ public class AccountStoreConfiguration {
     @Override
     @Generated
     public String toString() {
-      return "AccountCredentials [getPassword()=" + "*".repeat(getPassword().length())
+      return "AccountCredentials [getPassword()=" + repeat("*", getPassword().length())
           + ", getId()=" + getId() + ", getUsername()=" + getUsername() + ", getName()=" + getName()
           + "]";
     }
+  }
+
+  private static String repeat(String s, int count) {
+    if (s == null)
+      throw new NullPointerException("s");
+    if (count < 0)
+      throw new IllegalArgumentException("count must not be negative");
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i <= count; i++)
+      sb.append(s);
+    return sb.toString();
   }
 
   @Valid

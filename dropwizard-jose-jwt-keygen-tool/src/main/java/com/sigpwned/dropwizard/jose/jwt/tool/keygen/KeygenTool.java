@@ -19,6 +19,7 @@
  */
 package com.sigpwned.dropwizard.jose.jwt.tool.keygen;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -123,7 +124,7 @@ public class KeygenTool {
 
     X509Certificate cert;
     try {
-      X500Name dn = new X500Name("CN=" + URLEncoder.encode(realm, StandardCharsets.UTF_8));
+      X500Name dn = new X500Name("CN=" + urlencode(realm));
 
       ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).build(priv);
 
@@ -144,5 +145,13 @@ public class KeygenTool {
     store.setKeyEntry(keyAlias, priv, null, new Certificate[] {cert});
 
     store.store(configuration.out, password.toCharArray());
+  }
+
+  private static String urlencode(String s) {
+    try {
+      return URLEncoder.encode(s, StandardCharsets.UTF_8.name());
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("Failed to URL-encode string", e);
+    }
   }
 }

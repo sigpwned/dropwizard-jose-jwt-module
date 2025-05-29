@@ -19,9 +19,11 @@
  */
 package com.sigpwned.dropwizard.jose.jwt;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.ws.rs.WebApplicationException;
@@ -193,8 +195,8 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<SignedJWT, P>
       if (index == -1)
         throw new IllegalArgumentException("no method");
 
-      String method = s.substring(0, index).strip();
-      String credentials = s.substring(index + 1, s.length()).strip();
+      String method = s.substring(0, index).trim();
+      String credentials = s.substring(index + 1, s.length()).trim();
 
       return of(method, credentials);
     }
@@ -285,8 +287,9 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<SignedJWT, P>
     // - iat: Issued at, which we always set
     // - exp: Expires at, which we always set
     // - jti: JWT ID, which we always set
-    p.setJWTClaimsSetVerifier(new DefaultJWTClaimsVerifier<>(
-        new JWTClaimsSet.Builder().issuer(issuer).build(), Set.of("iat", "exp", "jti")));
+    p.setJWTClaimsSetVerifier(
+        new DefaultJWTClaimsVerifier<>(new JWTClaimsSet.Builder().issuer(issuer).build(),
+            new HashSet<>(asList("iat", "exp", "jti"))));
 
     this.processor = p;
     this.queryParameterName = queryParameterName;
